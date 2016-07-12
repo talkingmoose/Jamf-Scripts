@@ -1,14 +1,29 @@
 #!/bin/sh
 
-# RenameBuildings.sh
-# By William Smith
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# 
+# Written by: William Smith
 # Professional Services Engineer
 # JAMF Software
-# July 9, 2016
 # bill@talkingmoose.net
-
+# https://github.com/talkingmoose/Casper-Scripts
+#
+# Originally posted: July 9, 2016
+# Last updated: July 12, 2016
+#
+# Purpose: Reads a tab-delimited file (requires UNIX line-endings)
+# to get the name of a building in a JSS and rename it. This lets a
+# JSS administrator rename inconsistently named buildings to a consistent
+# format. Because buildings are referenced in other parts of the JSS by
+# ID rather than name, renaming buildings does not affect existing
+# functionality.
+#
+# The script creates a log file in the same folder as the script.
+#
 # Except where otherwise noted, this work is licensed under
 # http://creativecommons.org/licenses/by/4.0/
+# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # INSTRUCTIONS
 
@@ -25,7 +40,7 @@
 STARTTIME=$( /bin/date '+%s' )
 
 URL="https://jss.talkingmoose.net:8443"
-USERNAME="casperadmin"
+USERNAME="JSSAPI-Editor"
 PASSWORD="password"
 
 # create the output directory and log file
@@ -71,7 +86,7 @@ do
 	CONVERTED=${OLDBUILDING// /%20}
 	PUTXML="<building><name>$NEWBUILDING</name></building>"
 	
-	/usr/bin/curl -k $URL/JSSResource/buildings/name/$CONVERTED --user "$USERNAME:$PASSWORD" -H "Content-Type: application/xml" -X PUT -d "$PUTXML"
+	/usr/bin/curl -k $URL/JSSResource/buildings/name/$CONVERTED --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X PUT -d "$PUTXML"
 	
 	logresult "Renamed building \"$OLDBUILDING\" to \"$NEWBUILDING\"" "Failed renaming \"$OLDBUILDING\" to \"$NEWBUILDING\""
 	

@@ -1,14 +1,28 @@
 #!/bin/sh
 
-# DownloadNetworkSegments.sh
-# By William Smith
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# 
+# Written by: William Smith
 # Professional Services Engineer
 # JAMF Software
-# July 9, 2016
 # bill@talkingmoose.net
-
+# https://github.com/talkingmoose/Casper-Scripts
+#
+# Originally posted: July 9, 2016
+# Last updated: July 12, 2016
+#
+# Purpose: Downloads each network segment from your JSS and saves it as
+# an XML file in the JSS_Output directory. When used with
+# UploadNetworkSegments.sh, a JSS administrator can start with a list
+# from an old JSS, delete unwanted network segment files and then upload
+# the remaining files to another JSS.
+#
+# The script creates a log file in the same folder as the script.
+#
 # Except where otherwise noted, this work is licensed under
 # http://creativecommons.org/licenses/by/4.0/
+# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # INSTRUCTIONS
 
@@ -18,10 +32,10 @@
 # 4) Run the UploadNetworkSegments.sh script to populate your destination JSS.
 
 URL="https://jss.talkingmoose.net:8443"
-USERNAME="casperadmin"
+USERNAME="JSSAPI-Auditor"
 PASSWORD="password"
 
-# create the output directory and log file
+# define the output directory and log file
 # in the same directory as this script
 
 # path to this script
@@ -30,10 +44,10 @@ CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
 # name of this script
 CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
 
-# create the JSS_Output directory in the same directory as script
+# set the JSS_Output directory in the same directory as script
 OUTPUTDIRECTORY="$CURRENTDIRECTORY/JSS_Output"
 
-# create log file in same directory as script
+# set the log file in same directory as script
 LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
 
 # functions
@@ -66,7 +80,7 @@ else
 fi
 
 # download a list of network segment IDs
-NSIDS=$( /usr/bin/curl -k $URL/JSSResource/networksegments --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X GET | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
+NSIDS=$( /usr/bin/curl -k $URL/JSSResource/networksegments --user "$USERNAME:$PASSWORD" -H "Accept: text/xml" -X GET | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
 
 logresult "Created Network Segments ID list." "Failed to create Network Segments ID list."
 
@@ -74,7 +88,7 @@ logresult "Created Network Segments ID list." "Failed to create Network Segments
 while IFS= read ALINE
 do
 	# get the full XML for a network segment
-	ITEMXML=$( /usr/bin/curl -k $URL/JSSResource/networksegments/id/$ALINE --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X GET  | xmllint --format - )
+	ITEMXML=$( /usr/bin/curl -k $URL/JSSResource/networksegments/id/$ALINE --user "$USERNAME:$PASSWORD" -H "Accept: text/xml" -X GET  | xmllint --format - )
 	
 	NSNAME=$( echo "$ITEMXML" | awk -F "[><]" '/name/{print $3;exit}' )
 	

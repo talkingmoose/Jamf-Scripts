@@ -1,14 +1,28 @@
 #!/bin/sh
 
-# PopulateBuildingsList.sh
-# By William Smith
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# 
+# Written by: William Smith
 # Professional Services Engineer
 # JAMF Software
-# July 9, 2016
 # bill@talkingmoose.net
-
+# https://github.com/talkingmoose/Casper-Scripts
+#
+# Originally posted: July 9, 2016
+# Last updated: July 12, 2016
+#
+# Purpose: Uploads a list of buildings to your JSS by reading a
+# BuildingsList.txt file or a list pasted into this script. When used
+# with DownloadBuildingsList.sh, a JSS administrator can start with a list
+# from an old JSS, clean up the text and then upload the text to another
+# JSS.
+#
+# The script creates a log file in the same folder as the script.
+#
 # Except where otherwise noted, this work is licensed under
 # http://creativecommons.org/licenses/by/4.0/
+# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # INSTRUCTIONS
 
@@ -18,7 +32,7 @@
 # 4) Verify buildings in your JSS.
 
 URL="https://jss.talkingmoose.net:8443"
-USERNAME="casperadmin"
+USERNAME="JSSAPI-Editor"
 PASSWORD="password"
 
 # create the output directory and log file
@@ -78,7 +92,7 @@ while IFS= read ALINE
 do
 	THExml="<building><name>$ALINE</name></building>"
 	
-	/usr/bin/curl -k $URL/JSSResource/buildings --user "$USERNAME:$PASSWORD" -H "Content-Type: application/xml" -X POST -d "$THExml"
+	/usr/bin/curl -k $URL/JSSResource/buildings --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X POST -d "$THExml"
 	
 	logresult "Uploaded builidng \"$ALINE\"." "Failed to upload building \"$ALINE\"."
 	

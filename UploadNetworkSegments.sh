@@ -1,14 +1,27 @@
 #!/bin/sh
 
-# UploadNetworkSegments.sh
-# By William Smith
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# 
+# Written by: William Smith
 # Professional Services Engineer
 # JAMF Software
-# July 9, 2016
 # bill@talkingmoose.net
-
+# https://github.com/talkingmoose/Casper-Scripts
+#
+# Originally posted: July 9, 2016
+# Last updated: July 12, 2016
+#
+# Purpose: Uploads network segment XML files to your JSS. When used with
+# DownloadNetworkSegments.sh, a JSS administrator can start with a list
+# from an old JSS, delete unwanted network segment files and then upload
+# the remaining files to another JSS.
+#
+# The script creates a log file in the same folder as the script.
+#
 # Except where otherwise noted, this work is licensed under
 # http://creativecommons.org/licenses/by/4.0/
+# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # INSTRUCTIONS
 
@@ -22,7 +35,7 @@
 STARTTIME=$( /bin/date '+%s' )
 
 URL="https://jss.talkingmoose.net:8443"
-USERNAME="casperadmin"
+USERNAME="JSSAPI-Editor"
 PASSWORD="password"
 
 # create the output directory and log file
@@ -73,7 +86,7 @@ do
 	NSXML=$( cat "$OUTPUTDIRECTORY/$ALINE"  | xmllint --noblanks - )
 	logresult "Reading XML file \"$ALINE\"" "Failed to read XML file \"$ALINE\""
 	
-	/usr/bin/curl -k $URL/JSSResource/networksegments --user "$USERNAME:$PASSWORD" -H "Content-Type: application/xml" -X POST -d "$NSXML"
+	/usr/bin/curl -k $URL/JSSResource/networksegments --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X POST -d "$NSXML"
 	logresult "Uploaded XML file \"$ALINE\"" "Failed to upload XML file \"$ALINE\""
 	
 	UPLOAD=$((UPLOAD+1))
