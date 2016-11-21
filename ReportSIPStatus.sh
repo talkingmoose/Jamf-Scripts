@@ -23,7 +23,7 @@
 # In the JSS, create a new Extension Attribute:
 # Display Name: SIP Status
 # Description: Report whether System Integrity Protection is Enabled or Disabled.
-# Data Type: Sting
+# Data Type: String
 # Inventory Display: Operating System
 # Input Type Script
 # Script: Contents of this script 
