@@ -28,30 +28,24 @@
 # Input Type Script
 # Script: Contents of this script 
 
-# get current OS build number
+#!/bin/sh
 
-buildVersion=$( sw_vers -buildVersion | cut -c 1,2 )	# get first two characters of build
-														# 16 = 10.12
-														# 15 = 10.11
-														# 14 = 10.10
-														# ...
+# run command to report SIP status
+status=$( csrutil status 2>/dev/null )
 
-# if current OS is 10.10 or less,
-# then report "Not Supported" and stop
-
-if [ $buildVersion -le 14 ]; then						# evaluate build version
-	echo "<result>Not Supported</result>"				# report "Not Supported"
-	exit 0												# and stop the script
-fi
-
-# otherwise, report SIP status
-
-status=$( csrutil status | grep 'enabled' )				# get SIP enabled status
-
-if [[ "$status" ]]; then								# evaluate SIP status
-	echo "<result>Enabled</result>"						# report "Enabled"
-else
-	echo "<result>Disabled</result>"					# or report "Disabled"
-fi
+case "$status" in
+	
+	# SIP is enabled
+	"System Integrity Protection status: enabled.")
+		echo "<result>Enabled</result>";;
+		
+	# SIP is disabled
+	"System Integrity Protection status: disabled.")
+		echo "<result>Disabled</result>";;
+	
+	# SIP is not supported
+	"")
+		echo "<result>Not Supported</result>";;
+esac
 
 exit 0
