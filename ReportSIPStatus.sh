@@ -25,27 +25,27 @@
 # Description: Report whether System Integrity Protection is Enabled or Disabled.
 # Data Type: String
 # Inventory Display: Operating System
-# Input Type Script
+# Input Type: Script
 # Script: Contents of this script 
 
 #!/bin/sh
 
 # run command to report SIP status
-status=$( csrutil status 2>/dev/null )
+status=$( /usr/bin/csrutil status 2>/dev/null )
 
 case "$status" in
 	
 	# SIP is enabled
 	"System Integrity Protection status: enabled.")
-		echo "<result>Enabled</result>";;
+		/bin/echo "<result>Enabled</result>";;
 		
 	# SIP is disabled
 	"System Integrity Protection status: disabled.")
-		echo "<result>Disabled</result>";;
+		/bin/echo "<result>Disabled</result>";;
 	
 	# SIP is not supported
 	"")
-		echo "<result>Not Supported</result>";;
+		/bin/echo "<result>Not Supported</result>";;
 esac
 
 exit 0
