@@ -29,13 +29,9 @@ INSTRUCTIONS
 -----------------------------------------------------------------------
 ABOUT_THIS_SCRIPT
 
-URL="https://jamf.jamfcloud.com"
-userName="bill.smith"
-password="Tech.2017Q1"
-
-	# URL="https://jss.talkingmoose.net:8443"
-# userName="JSSAPI-Auditor"
-# password="password"
+URL="https://jss.talkingmoose.net:8443"
+userName="JSSAPI-Auditor"
+password="password"
 
 # define the output directory and log file
 # in the same directory as this script
