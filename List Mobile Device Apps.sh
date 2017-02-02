@@ -10,7 +10,7 @@
 	https://github.com/talkingmoose/Casper-Scripts
 	
 	Originally posted: January 14, 2017
-	Last updated: January 14, 2017
+	Last updated: February 1, 2017
 
 	Purpose: Retrieve list of mobile device apps in the JSS and report
 	name, category and App Store link in .js files named from scopes.
