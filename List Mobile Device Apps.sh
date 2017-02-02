@@ -85,13 +85,17 @@ logresult "Created mobile apps ID list." "Failed to create mobile apps ID list."
 while IFS= read aLine
 do
 	# get the full XML for a mobile app
-	/usr/bin/curl -ks $URL/JSSResource/mobiledeviceapplications/id/$aLine --user "$userName:$password" -H "Accept: text/xml" -X GET | /usr/bin/xmllint --format - > "$outputDirectory/$aLine.xml"
+	/usr/bin/curl -ks $URL/JSSResource/mobiledeviceapplications/id/$aLine --user "$userName:$password" -H "Accept: text/xml" -X GET > "$outputDirectory/$aLine.xml"
 	logresult "Retrieving XML for mobile device app ID $aLine." "Failed retrieving XML for mobile device app ID $aLine."
 	
 	# write the XML to a file and rename the file to the mobile device app name
 	appName=$( /usr/bin/xmllint --xpath 'string(/mobile_device_application/general/name)' "$outputDirectory/$aLine.xml" )
-	/bin/mv "$outputDirectory/$aLine.xml" "$outputDirectory/$appName.xml"
-	logresult "Name for mobile device app ID $aLine is \"$appName\"." "Failed reading name for mobile device app ID $aLine."
+				
+	# remove any colons, forward slashes and back slashes from the object's name
+	cleanedName=$( echo "$appName" | sed 's/[:\/\\]//g' )
+	
+	/bin/mv "$outputDirectory/$aLine.xml" "$outputDirectory/$cleanedName.xml"
+	logresult "Name for mobile device app ID $aLine is \"$cleanedName\"." "Failed reading name for mobile device app ID $aLine."
 
 done <<< "$appIDs"
 
@@ -102,7 +106,7 @@ xmlFiles=$( /bin/ls "$outputDirectory" )
 while IFS= read aFile
 do
 	# get a list of scopes from the XML file
-	appScopes=$( /usr/bin/xmllint --xpath '/mobile_device_application/scope/*/*/name' "$outputDirectory/$aFile"  | /usr/bin/sed 's/<\/name><name>/\$\n/g ; s/<name>// ; s/<\/name>//' )
+	appScopes=$( /usr/bin/xmllint --xpath '/mobile_device_application/scope/*/*/name' "$outputDirectory/$aFile"  | /usr/bin/perl -00pe 's/<\/name><name>/\n/g' | /usr/bin/sed 's/<name>// ; s/<\/name>//' )
 	
 	# start a file for each scope if necessary
 	while IFS= read aScope
@@ -162,6 +166,10 @@ done <<< "$jsFiles"
 # delete working XML files
 /bin/rm -R "$outputDirectory"/*.xml
 logresult "Deleting working XML files." "Failed deleting working XML files."
+
+# delete unwanted js files
+/usr/bin/find "$outputDirectory" ! -name "_All Student 1 to 1 iPads.js" ! -name "All Cart Based iPads - DEP.js" ! -name "*.xml" -delete
+logresult "Deleting unwanted js files." "Failed deleting unwanted js files."
 
 # stop the timer
 # calculate how long the script ran
