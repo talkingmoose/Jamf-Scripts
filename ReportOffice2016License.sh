@@ -65,15 +65,15 @@ function DetectO365License {
 	
 	while IFS= read aUser
 	do
-	# get the user's home folder path
-	homePath=$( eval /bin/echo ~$aUser )
+		# get the user's home folder path
+		homePath=$( eval /bin/echo ~$aUser )
 	
-	# list of potential Office 365 activation files
-	O365SUBMAIN="$homePath/Library/Group Containers/UBF8T346G9.Office/com.microsoft.Office365.plist"
-	O365SUBBAK1="$homePath/Library/Group Containers/UBF8T346G9.Office/com.microsoft.e0E2OUQxNUY1LTAxOUQtNDQwNS04QkJELTAxQTI5M0JBOTk4O.plist"
-	O365SUBBAK2="$homePath/Library/Group Containers/UBF8T346G9.Office/e0E2OUQxNUY1LTAxOUQtNDQwNS04QkJELTAxQTI5M0JBOTk4O" # hidden file
+		# list of potential Office 365 activation files
+		O365SUBMAIN="$homePath/Library/Group Containers/UBF8T346G9.Office/com.microsoft.Office365.plist"
+		O365SUBBAK1="$homePath/Library/Group Containers/UBF8T346G9.Office/com.microsoft.e0E2OUQxNUY1LTAxOUQtNDQwNS04QkJELTAxQTI5M0JBOTk4O.plist"
+		O365SUBBAK2="$homePath/Library/Group Containers/UBF8T346G9.Office/e0E2OUQxNUY1LTAxOUQtNDQwNS04QkJELTAxQTI5M0JBOTk4O" # hidden file
 	
-	# checks to see if an O365 subscription license file is present for each user
+		# checks to see if an O365 subscription license file is present for each user
 		if [[ -f "$O365SUBMAIN" || -f "$O365SUBBAK1" || -f "$O365SUBBAK2" ]]; then
 			activations=$((activations+1))
 		fi
