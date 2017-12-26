@@ -115,15 +115,15 @@ do
 	smbPath=$( echo "$aServer" | awk '{ print $5 }' )
 	
 	# mount remote SMB server.
-	mkdir "/Volumes/$smbAddress"
+	mkdir "/Volumes/$smbShare"
 	mount_smbfs "//$smbUsername:$smbPassword@$smbAddress/$smbShare" "/Volumes/$smbAddress"
 	logresult "Mounted SMB server $smbAddress." "Failed mount SMB server $smbAddress."
 	
-	/usr/bin/rsync --archive --human-readable --verbose --exclude=".*" --delete --progress --stats "$pathToPackages" "/Volumes/$smbAddress/$smbShare$smbPath" >> $logFile
+	/usr/bin/rsync --archive --human-readable --verbose --exclude=".*" --delete --progress --stats "$pathToPackages" "/Volumes/$smbShare$smbPath" >> $logFile
 	logresult "Completed Rsync to $aServer server." "Failed Rsync to $aServer server."
 	
 	# unmount SMB Volume
-	umount "/Volumes/$smbAddress"
+	umount "/Volumes/$smbShare"
 	logresult "Unmounted $aServer server." "Failed unmount $aServer server."
 	
 done <<< "$smbServers"
