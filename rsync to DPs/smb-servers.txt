@@ -1,0 +1,5 @@
+# Servers are synchronized in the order below.
+# Move higher priority servers to the top.
+# Format (tab separated):
+# server address > remote admin name > admin password > remote shre name > remote path to Packages folder
+server6.talkingmoose.net	casperadmin	P@55w0rd ShareName	/path/to/packages
