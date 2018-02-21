@@ -1,0 +1,8 @@
+# Servers are synchronized in the order below.
+# Move higher priority servers to the top.
+# Format (tab separated):
+# server address > remote admin name > remote path to Packages folder
+server1.talkingmoose.net	casperadmin	/CasperShare/Packages
+server2.talkingmoose.net	casperadmin	/CasperShare/Packages
+server3.talkingmoose.net	casperadmin	/CasperShare/Packages
+192.168.0.2	casperadmin	/CasperShare/Packages
