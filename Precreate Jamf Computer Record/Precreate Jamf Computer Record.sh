@@ -7,7 +7,7 @@
 	Professional Services Engineer
 	Jamf
 	bill@talkingmoose.net
-	https://gist.github.com/talkingmoose/?
+	https://github.com/talkingmoose/Casper-Scripts/tree/master/Precreate%20Jamf%20Computer%20Record
 	
 	Originally posted: March 28, 2018
 
