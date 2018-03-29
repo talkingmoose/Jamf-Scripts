@@ -8,7 +8,7 @@
 	JAMF Software
 	bill.smith@jamf.com
 
-	Originally posted: November 6, 2017
+	Originally posted: November 7, 2017
 
 	Purpose: Jamf Policy script to collection application usage stats
 	over a period of time. Stats are stored locally on each Mac. Use
@@ -22,16 +22,11 @@ INSTRUCTIONS
 	   Parameter 5: Jamf API user password
 	   Parameter 6: Usage days to collect
 	   Parameter 7: Data folder
-	2) Copy / paste the tab-delimited columns (no headers)
-	   into the removeList variable at the beginning of the script.
-	3) Add the Script to Jamf Pro under:
-	   Settings > Computer Management > Scripts
-	4) Create a Smart Group of devices with SentinelOne installed.
-	5) Add the script to a Policy.
-	6) Set the Policy to trigger as needed (Login or Recurring Check-in).
-	7) Set the Policy to Ongoing Frequency.
-	8) Set the Policy to Update Inventory when done.
-	9) Scope the policy to the Smart Group.
+	2) Add the script to a policy set to run once per day.
+	3) Set values for each of the script parameters.
+	4) Scope the policy to the Smart Group.
+	5) Create an Extension Attribute for each application to report.
+	   See applicationUsageEA.sh.
 
 -----------------------------------------------------------------------
 ABOUT_THIS_SCRIPT
