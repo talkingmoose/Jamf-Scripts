@@ -7,9 +7,10 @@
 	Professional Services Engineer
 	Jamf
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts/tree/master/Precreate%20Jamf%20Computer%20Record
+	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: March 28, 2018
+	Last updated: August 13, 2018
 
 	Purpose: Reads a list of computer information with tab-separated
 	details and pre-creates computer records in Jamf Pro. This enables
@@ -64,16 +65,16 @@ startTime=$( /bin/date '+%s' )
 logresult "--------------------- Begin Script ---------------------"
 
 # read the list of computers
-computersList=$( cat "Precreate Jamf Computer Record List.txt" )
+computersList=$( /bin/cat "Precreate Jamf Computer Record List.txt" )
 logresult "Reading computer record list." "Failed to read computer record list."
 
 # precreate computers, one at a time
 while IFS= read aComputer
 do
 	# parse the computer's information
-	serialNumber=$( echo "$aComputer" | awk -F \t '{ print $1 }' )
-	macAddress=$( echo "$aComputer" | awk -F \t '{ print $2 }' )
-	site=$( echo "$aComputer" | awk -F \t '{ print $3 }' )
+	serialNumber=$( echo "$aComputer" | /usr/bin/awk -F \t '{ print $1 }' )
+	macAddress=$( echo "$aComputer" | /usr/bin/awk -F \t '{ print $2 }' )
+	site=$( echo "$aComputer" | /usr/bin/awk -F \t '{ print $3 }' )
 	
 	# create XML to upload
 	theXML="<computer><general><name>$serialNumber</name><mac_address>$macAddress</mac_address><serial_number>$serialNumber</serial_number><site><name>$site</name></site></general></computer>"

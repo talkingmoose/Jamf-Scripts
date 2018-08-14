@@ -7,7 +7,7 @@
 	Professional Services Engineer
 	Jamf
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts
+	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Adapted from a script by: Paul Bowden
 	Software Engineer
@@ -16,7 +16,7 @@
 	https://github.com/pbowden-msft/Unlicense
 
 	Originally posted: January 7, 2017
-	Last updated: January 7, 2017
+	Last updated: August 13, 2018
 
 	Purpose: Use this script as part of an extension attribute in Jamf
 	to report the type of Microsoft Office 2016 licensing in use.
@@ -49,10 +49,10 @@ ABOUT_THIS_SCRIPT
 
 # Functions
 function DetectVolumeLicense {
-	VOLUMELICENSE="/Library/Preferences/com.microsoft.office.licensingV2.plist"
+	volumeLicense="/Library/Preferences/com.microsoft.office.licensingV2.plist"
 	
 	# checks to see if a volume license file is present
-	if [ -f "$VOLUMELICENSE" ]; then
+	if [ -f "$volumeLicense" ]; then
 		/bin/echo "Yes"
 	else
 		/bin/echo "No"

@@ -6,10 +6,10 @@
 # Professional Services Engineer
 # JAMF Software
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
-# Last updated: July 12, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: Uploads a list of buildings to your JSS by reading a
 # BuildingsList.txt file or a list pasted into this script. When used
@@ -26,47 +26,47 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, USERNAME and PASSWORD below to access your JSS.
-# 2) Edit the BUILDINGSLIST variable below or modify the script to "cat" a text file with the list.
+# 1) Modify URL, userName and passWord below to access your JSS.
+# 2) Edit the buildingsList variable below or modify the script to "cat" a text file with the list.
 # 3) Save and run this script via Terminal or an editor with a "run script" feature.
 # 4) Verify buildings in your JSS.
 
 URL="https://jss.talkingmoose.net:8443"
-USERNAME="JSSAPI-Editor"
-PASSWORD="password"
+userName="JSSAPI-Editor"
+passWord="password"
 
 # create the output directory and log file
 # in the same directory as this script
 
 # path to this script
-CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
+currentDirectory=$( /usr/bin/dirname "$0" )
 
 # name of this script
-CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
+currentScript=$( /usr/bin/basename -s .sh "$0" )
 
 # create log file in same directory as script
-LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
+logFile="$currentDirectory/$currentScript - $( /bin/date '+%y-%m-%d' ).log"
 
 # functions
 function logresult()	{
 	if [ $? = 0 ] ; then
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$logFile"
 	else
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$logFile"
 	fi
 }
 
 # the time right now
-STARTTIME=$( /bin/date '+%s' )
+startTime=$( /bin/date '+%s' )
 
 # start the log
 logresult "--------------------- Begin Script ---------------------"
 
 # get list of buildings from a file or from text pasted below
 
-# BUILDINGSLIST=$( cat '/path/to/buildingslist.txt' )
+# buildingsList=$( /bin/cat '/path/to/buildingslist.txt' )
 # or
-BUILDINGSLIST="Dome of the Rock
+buildingsList="Dome of the Rock
 La Pedrera
 One World Trade Center
 St Paul's Cathedral
@@ -88,17 +88,17 @@ logresult "Reading buildings list." "Failed to read buildings list."
 # upload building names, one at a time
 # the script will not modify buildings that already exist in the JSS
 
-while IFS= read ALINE
+while IFS= read aLine
 do
-	THExml="<building><name>$ALINE</name></building>"
+	THExml="<building><name>$aLine</name></building>"
 	
-	/usr/bin/curl -k $URL/JSSResource/buildings --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X POST -d "$THExml"
+	/usr/bin/curl -k $URL/JSSResource/buildings --user "$userName:$passWord" -H "Content-Type: text/xml" -X POST -d "$THExml"
 	
-	logresult "Uploaded builidng \"$ALINE\"." "Failed to upload building \"$ALINE\"."
+	logresult "Uploaded builidng \"$aLine\"." "Failed to upload building \"$aLine\"."
 	
 	UPLOAD=$((UPLOAD+1))
 
-done <<< "$BUILDINGSLIST"
+done <<< "$buildingsList"
 
 # stop the timer
 # calculate how long the script ran
@@ -107,10 +107,10 @@ logresult "Completing script."
 logresult "Processed $UPLOAD buildings."
 
 # the time right now
-STOPTIME=$( /bin/date '+%s' )
+stopTime=$( /bin/date '+%s' )
 
 # subtract start time from stop time and log the time in seconds
-DIFF=$(($STOPTIME-$STARTTIME))
+DIFF=$(($stopTime-$startTime))
 logresult "Script operations took $DIFF seconds to complete."
 
 logresult "---------------------- End Script ----------------------

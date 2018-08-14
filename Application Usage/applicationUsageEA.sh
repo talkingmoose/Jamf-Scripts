@@ -7,8 +7,10 @@
 	Professional Services Engineer
 	JAMF Software
 	bill.smith@jamf.com
+	https://github.com/talkingmoose/Jamf-Scripts
 
 	Originally posted: November 7, 2017
+	Updated: August 13, 2018
 
 	Purpose: Jamf Extension Attribute to collect application usage stats
 	from raw data is stored locally on each Mac. Use a Jamf Script/Policy
@@ -37,16 +39,16 @@ application="Safari.app"
 dataFolder="Talking Moose Industries"
 
 # read locally stored XML for listed application and get list of open seconds
-openSecondsList=$( grep "$application" -A 3 "/Library/${dataFolder}/latestXML.txt" | grep "<open>" | awk -F "<open>|</open>" '{ print $2 }' )
+openSecondsList=$( /usr/bin/grep "$application" -A 3 "/Library/${dataFolder}/latestXML.txt" | /usr/bin/grep "<open>" | /usr/bin/awk -F "<open>|</open>" '{ print $2 }' )
 
 # sum open seconds
-openSeconds=$( echo "$openSecondsList" | paste -sd+ - | bc )
+openSeconds=$( echo "$openSecondsList" | /usr/bin/paste -sd+ - | /usr/bin/bc )
 
 # calculate open minutes
 openMinutes=$((openSeconds/60))
 
 # read locally stored application usage file for number of days in report
-usageDays=$( defaults read "/Library/${dataFolder}/applicationusage.plist" Days )
+usageDays=$( /usr/bin/defaults read "/Library/${dataFolder}/applicationusage.plist" Days )
 
 # return app usage to JSS
 echo "<result>$openMinutes minutes over $usageDays days</result>"

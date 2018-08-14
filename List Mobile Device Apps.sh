@@ -7,10 +7,10 @@
 	Professional Services Engineer
 	Jamf
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts
+	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: January 14, 2017
-	Last updated: February 1, 2017
+	Last updated: August 13, 2018
 
 	Purpose: Retrieve list of mobile device apps in the JSS and report
 	name, category and App Store link in .js files named from scopes.
@@ -92,7 +92,7 @@ do
 	appName=$( /usr/bin/xmllint --xpath 'string(/mobile_device_application/general/name)' "$outputDirectory/$aLine.xml" )
 				
 	# remove any colons, forward slashes and back slashes from the object's name
-	cleanedName=$( echo "$appName" | sed 's/[:\/\\]//g' )
+	cleanedName=$( echo "$appName" | /usr/bin/sed 's/[:\/\\]//g' )
 	
 	/bin/mv "$outputDirectory/$aLine.xml" "$outputDirectory/$cleanedName.xml"
 	logresult "Name for mobile device app ID $aLine is \"$cleanedName\"." "Failed reading name for mobile device app ID $aLine."
@@ -117,7 +117,7 @@ do
 		
 		if [[ ! -f "$outputDirectory/$aScope.js" ]] ; then
 			# begin js file
-			/bin/echo "getData(
+			echo "getData(
 {
   \"mobile_device_applications\": {" > "$outputDirectory/$aScope.js"
   		logresult "Creating file \"$aScope.js\"." "Failed creating file \"$aScope.js\"."

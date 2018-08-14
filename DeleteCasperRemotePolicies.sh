@@ -6,10 +6,10 @@
 # Professional Services Engineer
 # JAMF Software
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: October 26, 2016
-# Last updated: October 26, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: each run of Casper Remote generates a new policy that's
 # stored in the JSS. However, those policies are not visible and
@@ -39,20 +39,20 @@ password="password"
 # in the same directory as this script
 
 # path to this script
-CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
+currentDirectory=$( /usr/bin/dirname "$0" )
 
 # name of this script
 CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
 
 # create log file in same directory as script
-LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
+logFile="$currentDirectory/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
 
 # functions
 function logresult()	{
 	if [ $? = 0 ] ; then
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$logFile"
 	else
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$logFile"
 	fi
 }
 
@@ -64,12 +64,12 @@ logresult "--------------------- Begin Script ---------------------"
 
 # get list of existing policies in the JSS
 
-policyXML=$( /usr/bin/curl -k $URL/JSSResource/policies --user "$userName:$password" -H "Accept: text/xml" -X GET | xmllint --format - )
+policyXML=$( /usr/bin/curl -k $URL/JSSResource/policies --user "$userName:$password" -H "Accept: text/xml" -X GET | /usr/bin/xmllint --format - )
 
 logresult "Reading policy XML." "Failed to read policy XML."
 
 # create a list of IDs to delete
-idList=$( echo "$policyXML" | egrep -B1 '<name>[0-9]+-[0-9]{2}-[0-9]{2} at [0-9]{1,2}:[0-9]{2,2} [AP]M \| .* \| .*</name>' | grep '<id>' | awk -F '[><]' '{print $3}' )
+idList=$( echo "$policyXML" | /usr/bin/egrep -B1 '<name>[0-9]+-[0-9]{2}-[0-9]{2} at [0-9]{1,2}:[0-9]{2,2} [AP]M \| .* \| .*</name>' | /usr/bin/grep '<id>' | /usr/bin/awk -F '[><]' '{print $3}' )
 
 while IFS= read aLine
 do

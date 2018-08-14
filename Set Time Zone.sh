@@ -7,10 +7,10 @@
 	Professional Services Engineer
 	JAMF Software
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts
+	https://github.com/talkingmoose/Jamf-Scripts
 
 	Originally posted: January 1, 2017
-	Last updated: January 1, 2017
+	Last updated: August 13, 2018
 
 	Purpose: When used with Self Service, enables a non-admin user
 	to change time zone on his or her Mac.
@@ -69,7 +69,7 @@ zone[6]="Asia/Colombo"
 currentScript=$( /usr/bin/basename -s .sh "$0" )
 
 # get path to the current user's home folder
-currentUserFolder=$( eval /bin/echo ~$( logname ) )
+currentUserFolder=$( eval echo ~$( /usr/bin/logname ) )
 
 # set log file path
 logFile="$currentUserFolder/Library/Logs/$currentScript.log"

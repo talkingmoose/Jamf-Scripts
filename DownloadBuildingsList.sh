@@ -6,13 +6,13 @@
 # Professional Services Engineer
 # JAMF Software
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
-# Last updated: July 12, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: Downloads a list of buildings from your JSS and saves the list
-# in a BuildingsList.txt file. When used with UploadBuildingsList.sh,
+# in a buildingsList.txt file. When used with UploadBuildingsList.sh,
 # a JSS administrator can start with a list from an old JSS, clean up the
 # text and then upload the text to another JSS.
 #
@@ -25,65 +25,65 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, USERNAME and PASSWORD below to access your JSS.
+# 1) Modify URL, userName and passWord below to access your JSS.
 # 2) Save and run this script via Terminal or an editor with a "run script" feature.
-# 3) Review the "BuildingsList.txt" file in the JSS_Output folder.
+# 3) Review the "buildingsList.txt" file in the JSS_Output folder.
 
 URL="https://jss.talkingmoose.net:8443"
-USERNAME="JSSAPI-Auditor"
-PASSWORD="password"
+userName="JSSAPI-Auditor"
+passWord="password"
 
 # define the output directory and log file
 # in the same directory as this script
 
 # path to this script
-CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
+currentDirectory=$( /usr/bin/dirname "$0" )
 
 # name of this script
-CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
+currentScript=$( /usr/bin/basename -s .sh "$0" )
 
 # set the JSS_Output directory in the same directory as script
-OUTPUTDIRECTORY="$CURRENTDIRECTORY/JSS_Output"
+outputDirectory="$currentDirectory/JSS_Output"
 
 # set the log file in same directory as script
-LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
+logFile="$currentDirectory/$currentScript - $( /bin/date '+%y-%m-%d' ).log"
 
 # functions
 function logresult()	{
 	if [ $? = 0 ] ; then
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$logFile"
 	else
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$logFile"
 	fi
 }
 
 # the time right now
-STARTTIME=$( /bin/date '+%s' )
+startTime=$( /bin/date '+%s' )
 
 # start the log
 logresult "--------------------- Begin Script ---------------------"
 
 # create the output directory if necessary
-mkdir -p "$OUTPUTDIRECTORY"
-logresult "Created $OUTPUTDIRECTORY directory." "Failed creating $OUTPUTDIRECTORY directory or it already exists."
+/bin/mkdir -p "$outputDirectory"
+logresult "Created $outputDirectory directory." "Failed creating $outputDirectory directory or it already exists."
 
 # download building XML file from JSS
-BUILDINGXML=$( /usr/bin/curl -k $URL/JSSResource/buildings --user "$USERNAME:$PASSWORD" -H "Accept: text/xml" -X GET  | xmllint --format - )
+buildingXML=$( /usr/bin/curl -k $URL/JSSResource/buildings --user "$userName:$passWord" -H "Accept: text/xml" -X GET  | /usr/bin/xmllint --format - )
 
 logresult "Downloaded building XML information." "Failed downloading building XML information."
 
 # parse the list for just building names
-BUILDINGSLIST=$( /bin/echo "$BUILDINGXML" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<name>(.*?)<\/name>/sg){print $1}' )
+buildingsList=$( /bin/echo "$buildingXML" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<name>(.*?)<\/name>/sg){print $1}' )
 
 logresult "Parsed building XML information for building names." "Failed parsing building XML information for building names."
 
 # write the list to the output file
-echo "$BUILDINGSLIST" > "$OUTPUTDIRECTORY/BuildingsList.txt"
+echo "$buildingsList" > "$outputDirectory/buildingsList.txt"
 
 logresult "Wrote building information to JSS_Output directory." "Failed to write building information to JSS_Output directory."
 
 # count the buildings
-BUILDINGCOUNT=$( echo "$BUILDINGSLIST" | grep -c ^ )
+buildingCount=$( echo "$buildingsList" | /usr/bin/grep -c ^ )
 
 logresult "Counted number of buildings." "Failed to count number of buildings."
 
@@ -91,13 +91,13 @@ logresult "Counted number of buildings." "Failed to count number of buildings."
 # calculate how long the script ran
 
 logresult "Completing script."
-logresult "Listed $BUILDINGCOUNT buildings."
+logresult "Listed $buildingCount buildings."
 
 # the time right now
-STOPTIME=$( /bin/date '+%s' )
+stopTime=$( /bin/date '+%s' )
 
 # subtract start time from stop time and log the time in seconds
-DIFF=$(($STOPTIME-$STARTTIME))
+DIFF=$(($stopTime-$startTime))
 logresult "Script operations took $DIFF seconds to complete."
 
 logresult "---------------------- End Script ----------------------

@@ -7,10 +7,10 @@
 	Professional Services Engineer
 	Jamf
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts
+	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: February 6, 2017
-	Last updated: February 6, 2017
+	Last updated: August 13, 2018
 
 	Purpose: uploads a list of departments to your JSS by reading a
 	DepartmentsList.txt file or a list pasted into this script.
@@ -63,7 +63,7 @@ logresult "--------------------- Begin Script ---------------------"
 
 # get list of buildings from a file or from text pasted below
 
-# departmentsList=$( cat '/path/to/departmentsList.txt' )
+# departmentsList=$( /bin/cat '/path/to/departmentsList.txt' )
 # or
 departmentsList="Accounting
 Sales

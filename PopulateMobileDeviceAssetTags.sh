@@ -6,10 +6,10 @@
 # Professional Services Engineer
 # JAMF Software
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: April 21, 2015
-# Last updated: July 12, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: Searches a Casper JSS for mobile device assets
 # with empty Asset Tag fields and populates those fields from lists
@@ -32,7 +32,7 @@
 
 
 # the time right now
-STARTTIME=$( /bin/date '+%s' )
+startTime=$( /bin/date '+%s' )
 
 
 ####################################
@@ -41,8 +41,8 @@ STARTTIME=$( /bin/date '+%s' )
 
 
 URL="https://jss.domain.com:8443"
-USERNAME="JSSAPI-Editor"
-PASSWORD="password"
+userName="JSSAPI-Editor"
+passWord="password"
 
 
 ####################################
@@ -51,16 +51,16 @@ PASSWORD="password"
 
 
 # path to this script
-CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
+currentDirectory=$( /usr/bin/dirname "$0" )
 
 # name of this script
-CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
+currentScript=$( /usr/bin/basename -s .sh "$0" )
 
 # set the log file in same directory as script
-LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
+logFile="$currentDirectory/$currentScript - $( /bin/date '+%y-%m-%d' ).log"
 
 # store Apple-provided spreadsheets file in same directory as script
-FULLLIST=$( /bin/cat "$CURRENTDIRECTORY/FullList.txt" )
+fullList=$( /bin/cat "$currentDirectory/FullList.txt" )
 
 
 ####################################
@@ -69,16 +69,16 @@ FULLLIST=$( /bin/cat "$CURRENTDIRECTORY/FullList.txt" )
 
 
 function stripreturns()	{
-	STRIPPED=$( /bin/echo $1 | xmllint --noblanks - )
-	/bin/echo $STRIPPED
+	stripped=$( /bin/echo $1 | /usr/bin/xmllint --noblanks - )
+	/bin/echo $stripped
 }
 
 
 function logresult()	{
 	if [ $? = 0 ] ; then
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$logFile"
 	else
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$logFile"
 	fi
 }
 
@@ -93,14 +93,14 @@ function logresult()	{
 logresult "--------------------- Begin Script ---------------------"
 
 # rotate logs -- delete all but the five most recent log files
-DELETEOLDLOGS=$( /bin/ls -1t "$CURRENTDIRECTORY/$CURRENTSCRIPT"*.log | /usr/bin/tail -n +6 )
+deleteOldLogs=$( /bin/ls -1t "$currentDirectory/$currentScript"*.log | /usr/bin/tail -n +6 )
 
-while IFS= read -r ALINE
+while IFS= read -r aLine
 do
-	LOGFILENAME=$( /usr/bin/basename "$ALINE" )
-	/bin/rm "$ALINE"
-	logresult "Deleting old log file: $LOGFILENAME."
-done <<< "$DELETEOLDLOGS"
+	logFileName=$( /usr/bin/basename "$aLine" )
+	/bin/rm "$aLine"
+	logresult "Deleting old log file: $logFileName."
+done <<< "$deleteOldLogs"
 
 # creating a list of computers without asset tags
 logresult "Gathering list of computers without asset tags."
@@ -128,29 +128,29 @@ TEHxml="<advanced_mobile_device_search>
 POSTxml=$( stripreturns "$TEHxml" )
 
 # create a temporary advanced computer search in the JSS using the criteria in the POST XML above		
-CREATESEARCH=$( /usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/0 --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X POST -d "$POSTxml" )
+createSearch=$( /usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/0 --user "$userName:$passWord" -H "Content-Type: text/xml" -X POST -d "$POSTxml" )
 
 # log the result
 logresult "Created temporary Advanced Mobile Device Search in JSS at $URL." "Failed creating temporary Advanced Mobile Device Search in JSS at $URL."
 
 # get temporary advanced computer search ID
-SEARCHID=$( /bin/echo $CREATESEARCH | /usr/bin/awk -F "<id>|</id>" '{ print $2 }' )
+searchID=$( /bin/echo $createSearch | /usr/bin/awk -F "<id>|</id>" '{ print $2 }' )
 
 # run the search and return serial numbers
-SEARCH=$( /usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/$SEARCHID --user "$USERNAME:$PASSWORD" -H "Accept: text/xml" -X GET )
+search=$( /usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/$searchID --user "$userName:$passWord" -H "Accept: text/xml" -X GET )
 
 # turn the returned list into a list of just serial numbers
-SERIALNUMBERLIST=$( /bin/echo "$SEARCH" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<Serial_Number>(.*?)<\/Serial_Number>/sg){print $1}' )
+serialNumberList=$( /bin/echo "$search" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<Serial_Number>(.*?)<\/Serial_Number>/sg){print $1}' )
 
 # count the serial numbers and log the results
-SERIALNUMBERCOUNT=$( /bin/echo $SERIALNUMBERLIST | /usr/bin/wc -w )
-SERIALNUMBERCOUNT=$( stripreturns "$SERIALNUMBERCOUNT" )
+serialNumberCount=$( /bin/echo $serialNumberList | /usr/bin/wc -w )
+serialNumberCount=$( stripreturns "$serialNumberCount" )
 
 # log the result
-logresult "Found $SERIALNUMBERCOUNT mobile devices without asset tags." "Failed finding mobile devices without asset tags."
+logresult "Found $serialNumberCount mobile devices without asset tags." "Failed finding mobile devices without asset tags."
 
 # delete the temporary advanced computer search
-/usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/$SEARCHID --user "$USERNAME:$PASSWORD" -X DELETE
+/usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/$searchID --user "$userName:$passWord" -X DELETE
 
 # log the result
 logresult "Deleted temporary Advanced Mobile Device Search." "Failed deleting temporary Advanced Computer Search."
@@ -164,32 +164,32 @@ logresult "Deleted temporary Advanced Mobile Device Search." "Failed deleting te
 # have no asset tag.
 ####################################
 
-for ALINE in $SERIALNUMBERLIST
+for aLine in $serialNumberList
 do
-	MATCHEDDEVICE=$( echo "$FULLLIST" | grep "$ALINE" )
+	matchedDevice=$( echo "$fullList" | grep "$aLine" )
 	
-	if [ "$MATCHEDDEVICE" = "" ] ; then
+	if [ "$matchedDevice" = "" ] ; then
 		# log the result
-		logresult "Serial number $ALINE not found in the spreadsheet from Apple."
+		logresult "Serial number $aLine not found in the spreadsheet from Apple."
 	else
-		SERIALNUMBER=$( /bin/echo "$MATCHEDDEVICE" | /usr/bin/awk '{ print $1 }' )
-		ASSETTAG=$( /bin/echo "$MATCHEDDEVICE" | /usr/bin/awk '{ print $2 }' )
+		serialNumber=$( /bin/echo "$matchedDevice" | /usr/bin/awk '{ print $1 }' )
+		assetTag=$( /bin/echo "$matchedDevice" | /usr/bin/awk '{ print $2 }' )
 		
 		THExml="<mobile_device>
 				<general>
-					<asset_tag>$ASSETTAG</asset_tag>
+					<asset_tag>$assetTag</asset_tag>
 				</general>
 			</mobile_device>"
 		
 		PUTxml=$( stripreturns "$THExml" )
 		
-		/usr/bin/curl -k 0 $URL/JSSResource/mobiledevices/serialnumber/$SERIALNUMBER --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X PUT -d "$PUTxml"
+		/usr/bin/curl -k 0 $URL/JSSResource/mobiledevices/serialnumber/$serialNumber --user "$userName:$passWord" -H "Content-Type: text/xml" -X PUT -d "$PUTxml"
 		
 		# log the result
-		logresult "Added asset tag $ASSETTAG to mobile device with serial number $SERIALNUMBER." "Failed to add asset tag $ASSETTAG to mobile device with serial number $SERIALNUMBER."
+		logresult "Added asset tag $assetTag to mobile device with serial number $serialNumber." "Failed to add asset tag $assetTag to mobile device with serial number $serialNumber."
 		
 		# keep count of populated asset tags
-		MATCHED=$((MATCHED+1))
+		matched=$((matched+1))
 	fi
 	
 done
@@ -202,13 +202,13 @@ done
 
 
 logresult "Completing script."
-logresult "Populated $MATCHED asset tags of $SERIALNUMBERCOUNT mobile devices without asset tags."
+logresult "Populated $matched asset tags of $serialNumberCount mobile devices without asset tags."
 
 # the time right now
-STOPTIME=$( /bin/date '+%s' )
+stopTime=$( /bin/date '+%s' )
 
 # subtract start time from stop time and log the time in seconds
-DIFF=$(($STOPTIME-$STARTTIME))
+DIFF=$(($stopTime-$startTime))
 logresult "Script operations took $DIFF seconds to complete."
 
 

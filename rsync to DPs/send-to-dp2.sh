@@ -7,9 +7,10 @@
 	Professional Services Engineer
 	JAMF Software
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts
+	https://github.com/talkingmoose/Jamf-Scripts
 
 	Originally posted: July 7, 2017
+	Last updated: August 13, 2018
 
 	Purpose: Synchronizes Jamf distribution points from Master.
 	Reads a list of servers supporting ssh and rsyncs over ssh. Then
@@ -83,10 +84,10 @@ done <<< "$deleteOldLogs"
 
 
 # read list of servers using rsync
-rsyncServers=$( grep -v \# "$currentDirectory/rsync-servers.txt")
+rsyncServers=$( /usr/bin/grep -v \# "$currentDirectory/rsync-servers.txt")
 
 # read list of servers using smb
-smbServers=$( grep -v \#  "$currentDirectory/smb-servers.txt" )
+smbServers=$( /usr/bin/grep -v \#  "$currentDirectory/smb-servers.txt" )
 
 
 
@@ -94,9 +95,9 @@ smbServers=$( grep -v \#  "$currentDirectory/smb-servers.txt" )
 while IFS= read aServer
 do
 	# parse each line for address, username and password
-	sshAddress=$( echo "$aServer" | awk '{ print $1 }' )
-	sshUsername=$( echo "$aServer" | awk '{ print $2 }' )
-	sshPath=$( echo "$aServer" | awk '{ print $3 }' )
+	sshAddress=$( echo "$aServer" | /usr/bin/awk '{ print $1 }' )
+	sshUsername=$( echo "$aServer" | /usr/bin/awk '{ print $2 }' )
+	sshPath=$( echo "$aServer" | /usr/bin/awk '{ print $3 }' )
 	
 	/usr/bin/rsync --archive --human-readable --verbose -e "ssh -i $HOME/.ssh/id_rsa" --exclude=".*" --delete --progress --stats "$pathToPackages" "$sshUsername@$sshAddress:$sshPath" >> $logFile
 	logresult "Completed Rsync to $aServer server." "Failed Rsync to $aServer server."
@@ -108,22 +109,22 @@ done <<< "$rsyncServers"
 while IFS= read aServer
 do
 	# parse each line for address, username and password
-	smbAddress=$( echo "$aServer" | awk '{ print $1 }' )
-	smbUsername=$( echo "$aServer" | awk '{ print $2 }' )
-	smbPassword=$( echo "$aServer" | awk '{ print $3 }' )
-	smbShare=$( echo "$aServer" | awk '{ print $4 }' )
-	smbPath=$( echo "$aServer" | awk '{ print $5 }' )
+	smbAddress=$( echo "$aServer" | /usr/bin/awk '{ print $1 }' )
+	smbUsername=$( echo "$aServer" | /usr/bin/awk '{ print $2 }' )
+	smbPassword=$( echo "$aServer" | /usr/bin/awk '{ print $3 }' )
+	smbShare=$( echo "$aServer" | /usr/bin/awk '{ print $4 }' )
+	smbPath=$( echo "$aServer" | /usr/bin/awk '{ print $5 }' )
 	
 	# mount remote SMB server.
-	mkdir "/Volumes/$smbShare"
-	mount_smbfs "//$smbUsername:$smbPassword@$smbAddress/$smbShare" "/Volumes/$smbAddress"
+	/bin/mkdir "/Volumes/$smbShare"
+	/sbin/mount_smbfs "//$smbUsername:$smbPassword@$smbAddress/$smbShare" "/Volumes/$smbAddress"
 	logresult "Mounted SMB server $smbAddress." "Failed mount SMB server $smbAddress."
 	
 	/usr/bin/rsync --archive --human-readable --verbose --exclude=".*" --delete --progress --stats "$pathToPackages" "/Volumes/$smbShare$smbPath" >> $logFile
 	logresult "Completed Rsync to $aServer server." "Failed Rsync to $aServer server."
 	
 	# unmount SMB Volume
-	umount "/Volumes/$smbShare"
+	/sbin/umount "/Volumes/$smbShare"
 	logresult "Unmounted $aServer server." "Failed unmount $aServer server."
 	
 done <<< "$smbServers"

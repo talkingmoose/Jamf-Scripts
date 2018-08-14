@@ -6,10 +6,10 @@
 # Professional Services Engineer
 # JAMF Software
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: November 20, 2016
-# Last updated: November 20, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: Shell script for JSS Extension Attribute to report SIP status
 # as Enabled, Disabled or Not Supported.
@@ -37,15 +37,15 @@ case "$status" in
 	
 	# SIP is enabled
 	"System Integrity Protection status: enabled.")
-		/bin/echo "<result>Enabled</result>";;
+		echo "<result>Enabled</result>";;
 		
 	# SIP is disabled
 	"System Integrity Protection status: disabled.")
-		/bin/echo "<result>Disabled</result>";;
+		echo "<result>Disabled</result>";;
 	
 	# SIP is not supported
 	"")
-		/bin/echo "<result>Not Supported</result>";;
+		echo "<result>Not Supported</result>";;
 esac
 
 exit 0
