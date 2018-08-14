@@ -4,18 +4,18 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
-# Last updated: July 12, 2016
+# Last updated: August 13, 2018
 #
-# Purpose: Downloads each network segment from your JSS and saves it as
-# an XML file in the JSS_Output directory. When used with
-# UploadNetworkSegments.sh, a JSS administrator can start with a list
-# from an old JSS, delete unwanted network segment files and then upload
-# the remaining files to another JSS.
+# Purpose: Downloads each network segment from your Jamf Pro server and
+# saves it as an XML file in the JSS_Output directory. When used with
+# UploadNetworkSegments.sh, a Jamf Pro administrator can start with a list
+# from an old Jamf Pro server, delete unwanted network segment files and
+# then upload the remaining files to another Jamf Pro server.
 #
 # The script creates a log file in the same folder as the script.
 #
@@ -26,94 +26,94 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, USERNAME and PASSWORD below to access your source JSS.
+# 1) Modify URL, userName and passWord below to access your source Jamf Pro server.
 # 2) Save and run this script via Terminal or an editor with a "run script" feature.
-# 3) Review the XML files in the JSS_Output folder and Trash any you do not wish to upload to your destination JSS.
-# 4) Run the UploadNetworkSegments.sh script to populate your destination JSS.
+# 3) Review the XML files in the JSS_Output folder and Trash any you do not wish to upload to your destination Jamf Pro server.
+# 4) Run the UploadNetworkSegments.sh script to populate your destination Jamf Pro server.
 
-URL="https://jss.talkingmoose.net:8443"
-USERNAME="JSSAPI-Auditor"
-PASSWORD="password"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Auditor"
+passWord="password"
 
 # define the output directory and log file
 # in the same directory as this script
 
 # path to this script
-CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
+currentDirectory=$( /usr/bin/dirname "$0" )
 
 # name of this script
-CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
+currentScript=$( /usr/bin/basename -s .sh "$0" )
 
 # set the JSS_Output directory in the same directory as script
-OUTPUTDIRECTORY="$CURRENTDIRECTORY/JSS_Output"
+outputDirectory="$currentDirectory/JSS_Output"
 
 # set the log file in same directory as script
-LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
+logFile="$currentDirectory/$currentScript - $( /bin/date '+%y-%m-%d' ).log"
 
 # functions
 function logresult()	{
 	if [ $? = 0 ] ; then
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$logFile"
 	else
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$logFile"
 	fi
 }
 
 # the time right now
-STARTTIME=$( /bin/date '+%s' )
+startTime=$( /bin/date '+%s' )
 
 # start the log
 logresult "--------------------- Begin Script ---------------------"
 
 # create a working directory on the desktop
-if [ -d "$OUTPUTDIRECTORY" ] ; then
+if [ -d "$outputDirectory" ] ; then
 
-	rm -R "$OUTPUTDIRECTORY"
-	logresult "Removed old $OUTPUTDIRECTORY directory." "Failed removing old $OUTPUTDIRECTORY directory."
+	/bin/rm -R "$outputDirectory"
+	logresult "Removed old $outputDirectory directory." "Failed removing old $outputDirectory directory."
 	
-	mkdir -p "$OUTPUTDIRECTORY"
-	logresult "Created new $OUTPUTDIRECTORY directory." "Failed creating new $OUTPUTDIRECTORY directory."
+	/bin/mkdir -p "$outputDirectory"
+	logresult "Created new $outputDirectory directory." "Failed creating new $outputDirectory directory."
 	
 else
-	mkdir -p "$OUTPUTDIRECTORY"
-	logresult "Created $OUTPUTDIRECTORY directory." "Failed creating $OUTPUTDIRECTORY directory."
+	/bin/mkdir -p "$outputDirectory"
+	logresult "Created $outputDirectory directory." "Failed creating $outputDirectory directory."
 fi
 
 # download a list of network segment IDs
-NSIDS=$( /usr/bin/curl -k $URL/JSSResource/networksegments --user "$USERNAME:$PASSWORD" -H "Accept: text/xml" -X GET | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
+nsIDs=$( /usr/bin/curl -k $URL/JSSResource/networksegments --user "$userName:$passWord" -H "Accept: text/xml" -X GET | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
 
 logresult "Created Network Segments ID list." "Failed to create Network Segments ID list."
 
 # download XML for each network segment and prepare for upload
-while IFS= read ALINE
+while IFS= read aLine
 do
 	# get the full XML for a network segment
-	ITEMXML=$( /usr/bin/curl -k $URL/JSSResource/networksegments/id/$ALINE --user "$USERNAME:$PASSWORD" -H "Accept: text/xml" -X GET  | xmllint --format - )
+	ITEMXML=$( /usr/bin/curl -k $URL/JSSResource/networksegments/id/$aLine --user "$userName:$passWord" -H "Accept: text/xml" -X GET  | /usr/bin/xmllint --format - )
 	
-	NSNAME=$( echo "$ITEMXML" | awk -F "[><]" '/name/{print $3;exit}' )
+	nsName=$( echo "$ITEMXML" | /usr/bin/awk -F "[><]" '/name/{print $3;exit}' )
 	
-	logresult "Retrieved XML for network segment \"$NSNAME\"." "Failed to retrieve XML for network segment \"$NSNAME\"."
+	logresult "Retrieved XML for network segment \"$nsName\"." "Failed to retrieve XML for network segment \"$nsName\"."
 	
 	# modify the returned XML and write to a file
-	echo "$ITEMXML" > "$OUTPUTDIRECTORY/$NSNAME.xml"
+	echo "$ITEMXML" > "$outputDirectory/$nsName.xml"
 
-	logresult "Created XML file for network segment \"$NSNAME\"." "Failed to create XML file for network segment \"$NSNAME\"."
+	logresult "Created XML file for network segment \"$nsName\"." "Failed to create XML file for network segment \"$nsName\"."
 	
-	DOWNLOAD=$((DOWNLOAD+1))
+	downLoad=$((downLoad+1))
 
-done <<< "$NSIDS"
+done <<< "$nsIDs"
 
 # stop the timer
 # calculate how long the script ran
 
 logresult "Completing script."
-logresult "Processed $DOWNLOAD network segments."
+logresult "Processed $downLoad network segments."
 
 # the time right now
-STOPTIME=$( /bin/date '+%s' )
+stopTime=$( /bin/date '+%s' )
 
 # subtract start time from stop time and log the time in seconds
-DIFF=$(($STOPTIME-$STARTTIME))
+DIFF=$(($stopTime-$startTime))
 logresult "Script operations took $DIFF seconds to complete."
 
 logresult "---------------------- End Script ----------------------

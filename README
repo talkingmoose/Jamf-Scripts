@@ -1,19 +1,19 @@
-Casper Scripts
+Jamf Scripts
 bill@talkingmoose.net
 
 
 Purpose
 
-These are a random set of scripts I've made for customers to work with JAMF Software's Casper Suite. They are some examples for accessing a JAMF Software Server (JSS) to download, upload or modify data as well as other functions.
+These are a random set of scripts I've made for customers to work with Jamf Pro. They are some examples for accessing a Jamf Pro server to download, upload or modify data as well as other functions.
 
 
 Support
 
-JAMF Software does not support these scripts. Please do not contact them for assistance. Contact JAMF Software if you need a custom script tailored to your environment.
+Jamf does not support these scripts. Please do not contact them for assistance. Contact Jamf if you need a custom script tailored to your environment.
 
-For basic JSS API documentation, use a web browser to access the API page on your JSS at:
-https://jss.yourdomain.com:8443/api or
-https://yourjss.jamfcloud.com/api
+For basic Jamf Pro Classic API documentation, use a web browser to access the API page on your server at:
+https://server.yourdomain.com:8443/api or
+https://yourinstance.jamfcloud.com/api
 
 
 License

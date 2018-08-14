@@ -4,16 +4,16 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: October 29, 2016
-# Last updated: October 29, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: Updates a Site name in parsed XML from the JSS Migration
 # Utility: https://github.com/igeekjsc/JSSAPIScripts. Useful for
-# migrating to new sites in a different JSS.
+# migrating to new sites in a different Jamf Pro server.
 #
 # The script creates a log file in the same folder as the script.
 #
@@ -61,24 +61,24 @@ startTime=$( /bin/date '+%s' )
 logresult "--------------------- Begin Script ---------------------"
 
 # get list of XML files
-fileList=$( ls "$outputDirectory" )
+fileList=$( /bin/ls "$outputDirectory" )
 logresult "Creating XML file list." "Failed creating XML file list."
 
 while IFS= read aFile
 do
-	XMLContent=$( cat "$currentDirectory/parsed_xml/$aFile" )
+	XMLContent=$( /bin/cat "$currentDirectory/parsed_xml/$aFile" )
 	
 	logresult "Reading file \"$aFile\"." "Failed reading file \"$aFile\"."
 	
-	unwrappedXML=$( echo "$XMLContent" | xmllint --noblanks - )
+	unwrappedXML=$( echo "$XMLContent" | /usr/bin/xmllint --noblanks - )
 	
 	logresult "Unwrapping XML from file \"$aFile\"." "Failed unwrappingXML from file \"$aFile\"."
 	
-	updatedXML=$( echo "$unwrappedXML" | sed "s/<site><name>.*<\/name><\/site>/<site><name>$siteName<\/name><\/site>/g" )
+	updatedXML=$( echo "$unwrappedXML" | /usr/bin/sed "s/<site><name>.*<\/name><\/site>/<site><name>$siteName<\/name><\/site>/g" )
 	
 	logresult "Replacing site in XML from file \"$aFile\"." "Failed replacing site in XML from file \"$aFile\"."
 	
-	newXML=$( echo "$updatedXML" | xmllint --format - )
+	newXML=$( echo "$updatedXML" | /usr/bin/xmllint --format - )
 	
 	logresult "Rewrapping XML from file \"$aFile\"." "Failed rewrapping XML from file \"$aFile\"."
 	

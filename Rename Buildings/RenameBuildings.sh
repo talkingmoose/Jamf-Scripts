@@ -4,18 +4,18 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
-# https://github.com/talkingmoose/Casper-Scripts
+# https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
-# Last updated: July 12, 2016
+# Last updated: August 13, 2018
 #
 # Purpose: Reads a tab-delimited file (requires UNIX line-endings)
-# to get the name of a building in a JSS and rename it. This lets a
-# JSS administrator rename inconsistently named buildings to a consistent
-# format. Because buildings are referenced in other parts of the JSS by
-# ID rather than name, renaming buildings does not affect existing
+# to get the name of a building in a Jamf Pro server and rename it. This
+# lets an administrator rename inconsistently named buildings to a consistent
+# format. Because buildings are referenced in other parts of the Jamf Pro
+# server by ID rather than name, renaming buildings does not affect existing
 # functionality.
 #
 # The script creates a log file in the same folder as the script.
@@ -27,84 +27,84 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, USERNAME and PASSWORD below to access your JSS.
+# 1) Modify URL, userName and passWord below to access your Jamf Pro server.
 # 2) Edit the RenameBuildingsList.tab file.
 #	 One set of names per line in the format:
 #	 Old building name _tab_ New building name
 #	 Use a quality text editor such as BBEdit or TextWranlger to save the file with Unix line endings.
 # 3) Place the RenameBuildingsList.tab file in the same directory as this script.
 # 4) Run this script via Terminal or an editor with a "run script" feature.
-# 5) Verify buildings in your JSS.
+# 5) Verify buildings in your Jamf Pro server.
 
 # the time right now
-STARTTIME=$( /bin/date '+%s' )
+startTime=$( /bin/date '+%s' )
 
-URL="https://jss.talkingmoose.net:8443"
-USERNAME="JSSAPI-Editor"
-PASSWORD="password"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Editor"
+passWord="password"
 
 # create the output directory and log file
 # in the same directory as this script
 
 # path to this script
-CURRENTDIRECTORY=$( /usr/bin/dirname "$0" )
+currentDirectory=$( /usr/bin/dirname "$0" )
 
 # name of this script
-CURRENTSCRIPT=$( /usr/bin/basename -s .sh "$0" )
+currentScript=$( /usr/bin/basename -s .sh "$0" )
 
 # create log file in same directory as script
-LOGFILE="$CURRENTDIRECTORY/$CURRENTSCRIPT - $( /bin/date '+%y-%m-%d' ).log"
+logFile="$currentDirectory/$currentScript - $( /bin/date '+%y-%m-%d' ).log"
 
 # functions
 function logresult()	{
 	if [ $? = 0 ] ; then
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$1" >> "$logFile"
 	else
-	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$LOGFILE"
+	  /bin/date "+%Y-%m-%d %H:%M:%S	$2" >> "$logFile"
 	fi
 }
 
 # the time right now
-STARTTIME=$( /bin/date '+%s' )
+startTime=$( /bin/date '+%s' )
 
 # start the log
 logresult "--------------------- Begin Script ---------------------"
 
-RENAMEBUILDINGSLIST=$( cat "$CURRENTDIRECTORY/RenameBuildingsList.tab" )
+renameBuildingsList=$( cat "$currentDirectory/RenameBuildingsList.tab" )
 
 # verify the working directory on the desktop
-if [ ! -f "$CURRENTDIRECTORY/RenameBuildingsList.tab" ] ; then
-	echo "File \"$CURRENTDIRECTORY/RenameBuildingsList.tab\" does not exist. Fix this path first."
-	logresult "File \"$CURRENTDIRECTORY/RenameBuildingsList.tab\" does not exist. Fix this path first."
+if [ ! -f "$currentDirectory/RenameBuildingsList.tab" ] ; then
+	echo "File \"$currentDirectory/RenameBuildingsList.tab\" does not exist. Fix this path first."
+	logresult "File \"$currentDirectory/RenameBuildingsList.tab\" does not exist. Fix this path first."
 	exit 0
 fi
 
-while IFS= read ALINE
+while IFS= read aLine
 do
-	OLDBUILDING=$( echo "$ALINE" | awk -F \t '{print $1}' )
-	NEWBUILDING=$( echo "$ALINE" | awk -F \t '{print $2}' )
-	CONVERTED=${OLDBUILDING// /%20}
-	PUTXML="<building><name>$NEWBUILDING</name></building>"
+	oldBuilding=$( echo "$aLine" | awk -F \t '{print $1}' )
+	newBuilding=$( echo "$aLine" | awk -F \t '{print $2}' )
+	converted=${oldBuilding// /%20}
+	putXML="<building><name>$newBuilding</name></building>"
 	
-	/usr/bin/curl -k $URL/JSSResource/buildings/name/$CONVERTED --user "$USERNAME:$PASSWORD" -H "Content-Type: text/xml" -X PUT -d "$PUTXML"
+	/usr/bin/curl -k $URL/JSSResource/buildings/name/$converted --user "$userName:$passWord" -H "Content-Type: text/xml" -X PUT -d "$putXML"
 	
-	logresult "Renamed building \"$OLDBUILDING\" to \"$NEWBUILDING\"" "Failed renaming \"$OLDBUILDING\" to \"$NEWBUILDING\""
+	logresult "Renamed building \"$oldBuilding\" to \"$newBuilding\"" "Failed renaming \"$oldBuilding\" to \"$newBuilding\""
 	
-	BUILDINGCOUNT=$((BUILDINGCOUNT+1))
+	buildingCount=$((buildingCount+1))
 	
-done <<< "$RENAMEBUILDINGSLIST"
+done <<< "$renameBuildingsList"
 
 # stop the timer
 # calculate how long the script ran
 
 logresult "Completing script."
-logresult "Processed $BUILDINGCOUNT building name changes."
+logresult "Processed $buildingCount building name changes."
 
 # the time right now
-STOPTIME=$( /bin/date '+%s' )
+stopTime=$( /bin/date '+%s' )
 
 # subtract start time from stop time and log the time in seconds
-DIFF=$(($STOPTIME-$STARTTIME))
+DIFF=$(($stopTime-$startTime))
 logresult "Script operations took $DIFF seconds to complete."
 
 logresult "---------------------- End Script ----------------------

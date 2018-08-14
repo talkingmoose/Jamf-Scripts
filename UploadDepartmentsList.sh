@@ -3,17 +3,17 @@
 <<ABOUT_THIS_SCRIPT
 -----------------------------------------------------------------------
 
-	Written by:William Smith
+	Written by: William Smith
 	Professional Services Engineer
 	Jamf
 	bill@talkingmoose.net
-	https://github.com/talkingmoose/Casper-Scripts
+	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: February 6, 2017
-	Last updated: February 6, 2017
+	Last updated: August 13, 2018
 
-	Purpose: uploads a list of departments to your JSS by reading a
-	DepartmentsList.txt file or a list pasted into this script.
+	Purpose: uploads a list of departments to your Jamf Pro server
+	by reading a DepartmentsList.txt file or a list pasted into this script.
 
 	Except where otherwise noted, this work is licensed under
 	http://creativecommons.org/licenses/by/4.0/
@@ -30,8 +30,8 @@ INSTRUCTIONS
 -----------------------------------------------------------------------
 ABOUT_THIS_SCRIPT
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Editor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Editor"
 password="password"
 
 # create the output directory and log file
@@ -63,7 +63,7 @@ logresult "--------------------- Begin Script ---------------------"
 
 # get list of buildings from a file or from text pasted below
 
-# departmentsList=$( cat '/path/to/departmentsList.txt' )
+# departmentsList=$( /bin/cat '/path/to/departmentsList.txt' )
 # or
 departmentsList="Accounting
 Sales
@@ -74,7 +74,7 @@ Recreation"
 logresult "Reading departments list." "Failed to read departments list."
 
 # upload department names, one at a time
-# the script will not modify departments that already exist in the JSS
+# the script will not modify departments that already exist in the Jamf Pro server
 
 while IFS= read aLine
 do
