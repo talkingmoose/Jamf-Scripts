@@ -4,17 +4,18 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
 # Last updated: August 13, 2018
 #
-# Purpose: Downloads a list of buildings from your JSS and saves the list
-# in a buildingsList.txt file. When used with UploadBuildingsList.sh,
-# a JSS administrator can start with a list from an old JSS, clean up the
-# text and then upload the text to another JSS.
+# Purpose: Downloads a list of buildings from your Jamf Pro server and
+# saves the list in a buildingsList.txt file. When used with
+# UploadBuildingsList.sh, a Jamf Pro administrator can start with a list from
+# an old Jamf Pro server, clean up the text and then upload the text to
+# another Jamf Pro server.
 #
 # The script creates a log file in the same folder as the script.
 #
@@ -25,12 +26,12 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, userName and passWord below to access your JSS.
+# 1) Modify URL, userName and passWord below to access your Jamf Pro server.
 # 2) Save and run this script via Terminal or an editor with a "run script" feature.
 # 3) Review the "buildingsList.txt" file in the JSS_Output folder.
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Auditor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Auditor"
 passWord="password"
 
 # define the output directory and log file
@@ -67,7 +68,7 @@ logresult "--------------------- Begin Script ---------------------"
 /bin/mkdir -p "$outputDirectory"
 logresult "Created $outputDirectory directory." "Failed creating $outputDirectory directory or it already exists."
 
-# download building XML file from JSS
+# download building XML file from Jamf Pro server
 buildingXML=$( /usr/bin/curl -k $URL/JSSResource/buildings --user "$userName:$passWord" -H "Accept: text/xml" -X GET  | /usr/bin/xmllint --format - )
 
 logresult "Downloaded building XML information." "Failed downloading building XML information."

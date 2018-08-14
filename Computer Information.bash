@@ -6,7 +6,7 @@
 	Written by:William Smith
 	Professional Services Engineer
 	Jamf
-	bill.smith@jamf.com
+	bill@talkingmoose.net
 	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: August 13, 2018

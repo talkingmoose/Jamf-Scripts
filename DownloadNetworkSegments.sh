@@ -4,18 +4,18 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
 # Last updated: August 13, 2018
 #
-# Purpose: Downloads each network segment from your JSS and saves it as
-# an XML file in the JSS_Output directory. When used with
-# UploadNetworkSegments.sh, a JSS administrator can start with a list
-# from an old JSS, delete unwanted network segment files and then upload
-# the remaining files to another JSS.
+# Purpose: Downloads each network segment from your Jamf Pro server and
+# saves it as an XML file in the JSS_Output directory. When used with
+# UploadNetworkSegments.sh, a Jamf Pro administrator can start with a list
+# from an old Jamf Pro server, delete unwanted network segment files and
+# then upload the remaining files to another Jamf Pro server.
 #
 # The script creates a log file in the same folder as the script.
 #
@@ -26,13 +26,13 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, userName and passWord below to access your source JSS.
+# 1) Modify URL, userName and passWord below to access your source Jamf Pro server.
 # 2) Save and run this script via Terminal or an editor with a "run script" feature.
-# 3) Review the XML files in the JSS_Output folder and Trash any you do not wish to upload to your destination JSS.
-# 4) Run the UploadNetworkSegments.sh script to populate your destination JSS.
+# 3) Review the XML files in the JSS_Output folder and Trash any you do not wish to upload to your destination Jamf Pro server.
+# 4) Run the UploadNetworkSegments.sh script to populate your destination Jamf Pro server.
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Auditor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Auditor"
 passWord="password"
 
 # define the output directory and log file

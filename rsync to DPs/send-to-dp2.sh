@@ -5,7 +5,7 @@
 
 	Written by: William Smith
 	Professional Services Engineer
-	JAMF Software
+	Jamf
 	bill@talkingmoose.net
 	https://github.com/talkingmoose/Jamf-Scripts
 

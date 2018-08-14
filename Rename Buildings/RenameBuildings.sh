@@ -4,7 +4,7 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
@@ -12,10 +12,10 @@
 # Last updated: August 13, 2018
 #
 # Purpose: Reads a tab-delimited file (requires UNIX line-endings)
-# to get the name of a building in a JSS and rename it. This lets a
-# JSS administrator rename inconsistently named buildings to a consistent
-# format. Because buildings are referenced in other parts of the JSS by
-# ID rather than name, renaming buildings does not affect existing
+# to get the name of a building in a Jamf Pro server and rename it. This
+# lets an administrator rename inconsistently named buildings to a consistent
+# format. Because buildings are referenced in other parts of the Jamf Pro
+# server by ID rather than name, renaming buildings does not affect existing
 # functionality.
 #
 # The script creates a log file in the same folder as the script.
@@ -27,20 +27,20 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, userName and passWord below to access your JSS.
+# 1) Modify URL, userName and passWord below to access your Jamf Pro server.
 # 2) Edit the RenameBuildingsList.tab file.
 #	 One set of names per line in the format:
 #	 Old building name _tab_ New building name
 #	 Use a quality text editor such as BBEdit or TextWranlger to save the file with Unix line endings.
 # 3) Place the RenameBuildingsList.tab file in the same directory as this script.
 # 4) Run this script via Terminal or an editor with a "run script" feature.
-# 5) Verify buildings in your JSS.
+# 5) Verify buildings in your Jamf Pro server.
 
 # the time right now
 startTime=$( /bin/date '+%s' )
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Editor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Editor"
 passWord="password"
 
 # create the output directory and log file

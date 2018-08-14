@@ -5,7 +5,7 @@
 
 	Written by: William Smith
 	Professional Services Engineer
-	JAMF Software
+	Jamf
 	bill@talkingmoose.net
 	https://github.com/talkingmoose/Jamf-Scripts
 
@@ -36,7 +36,7 @@ INSTRUCTIONS
 	   as needed to make the script easier to use.
 	2) Numbers for each time zone in the short listmust be unique
 	   and sequential beginning with "1".
-	3) Add this script to your Jamf server.
+	3) Add this script to your Jamf Pro server.
 	4) Create an ongoing Self Service item with the script and
 	   enabled for offline use.
 	

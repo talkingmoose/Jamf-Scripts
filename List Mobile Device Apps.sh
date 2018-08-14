@@ -12,8 +12,9 @@
 	Originally posted: January 14, 2017
 	Last updated: August 13, 2018
 
-	Purpose: Retrieve list of mobile device apps in the JSS and report
-	name, category and App Store link in .js files named from scopes.
+	Purpose: Retrieve list of mobile device apps in the Jamf Pro server
+	and report name, category and App Store link in .js files named
+	from scopes.
 
 	Except where otherwise noted, this work is licensed under
 	http://creativecommons.org/licenses/by/4.0/
@@ -29,8 +30,8 @@ INSTRUCTIONS
 -----------------------------------------------------------------------
 ABOUT_THIS_SCRIPT
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Auditor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Auditor"
 password="password"
 
 # define the output directory and log file

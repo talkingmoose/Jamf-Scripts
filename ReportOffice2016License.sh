@@ -29,7 +29,7 @@
 INSTRUCTIONS
 
 	1) Log in to the Jamf Pro server.
-	2) Navigate to JSS Settings > Computer Management > Extension Attributes.
+	2) In Jamf Pro navigate to Settings > Computer Management > Extension Attributes.
 	3) Click the " + " button to create a new extension attribute with these settings:
 	   Display Name: Office 2016 License
 	   Description: Reports Office 2016 licenses in use.

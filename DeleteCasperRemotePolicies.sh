@@ -4,7 +4,7 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
@@ -12,9 +12,9 @@
 # Last updated: August 13, 2018
 #
 # Purpose: each run of Casper Remote generates a new policy that's
-# stored in the JSS. However, those policies are not visible and
-# the JSS has no means to allow administrators to delete them. This
-# script identifies all JSS policies with names in the format:
+# stored in the Jamf Pro server. However, those policies are not visible and
+# the server has no means to allow administrators to delete them. This
+# script identifies all Jamf Pro policies with names in the format:
 #    '2013-08-07 at 4:18 PM | jsanchez | 1 Computer'
 # and deletes them.
 #
@@ -27,12 +27,12 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, userName and password below to access your JSS.
+# 1) Modify URL, userName and password below to access your Jamf Pro server.
 # 2) Save and run this script via Terminal or an editor with a "run script" feature.
-# 3) Verify policies in your JSS or by appending /api to your JSS URL.
+# 3) Verify policies in your Jamf Pro server or by appending /api to your Jamf Pro URL.
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Editor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Editor"
 password="password"
 
 # create the output directory and log file
@@ -62,7 +62,7 @@ startTime=$( /bin/date '+%s' )
 # start the log
 logresult "--------------------- Begin Script ---------------------"
 
-# get list of existing policies in the JSS
+# get list of existing policies in the Jamf Pro server
 
 policyXML=$( /usr/bin/curl -k $URL/JSSResource/policies --user "$userName:$password" -H "Accept: text/xml" -X GET | /usr/bin/xmllint --format - )
 

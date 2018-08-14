@@ -4,17 +4,17 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: April 21, 2015
 # Last updated: August 13, 2018
 #
-# Purpose: Searches a Casper JSS for mobile device assets
+# Purpose: Searches a Jamf Pro server for mobile device assets
 # with empty Asset Tag fields and populates those fields from lists
-# provided by Apple. Script relies on the JSS API. Requires a text file
-# of device serial numbers and asset tags in the format
+# provided by Apple. Script relies on the Jamf Pro Classic API. Requires
+# a text file of device serial numbers and asset tags in the format
 # "SerialNumber > tab > AssetTag > return" and named FullList.txt in
 # the same directory as the script.
 #
@@ -36,12 +36,12 @@ startTime=$( /bin/date '+%s' )
 
 
 ####################################
-# JSS URL and credentials
+# Jamf Pro URL and credentials
 ####################################
 
 
-URL="https://jss.domain.com:8443"
-userName="JSSAPI-Editor"
+URL="https://jamfpro.domain.com:8443"
+userName="API-Editor"
 passWord="password"
 
 
@@ -127,11 +127,11 @@ TEHxml="<advanced_mobile_device_search>
 # this strips the returns before POSTing the XML
 POSTxml=$( stripreturns "$TEHxml" )
 
-# create a temporary advanced computer search in the JSS using the criteria in the POST XML above		
+# create a temporary advanced computer search in the Jamf Pro server using the criteria in the POST XML above		
 createSearch=$( /usr/bin/curl -k -s 0 $URL/JSSResource/advancedmobiledevicesearches/id/0 --user "$userName:$passWord" -H "Content-Type: text/xml" -X POST -d "$POSTxml" )
 
 # log the result
-logresult "Created temporary Advanced Mobile Device Search in JSS at $URL." "Failed creating temporary Advanced Mobile Device Search in JSS at $URL."
+logresult "Created temporary Advanced Mobile Device Search in Jamf Pro at $URL." "Failed creating temporary Advanced Mobile Device Search in Jamf Pro at $URL."
 
 # get temporary advanced computer search ID
 searchID=$( /bin/echo $createSearch | /usr/bin/awk -F "<id>|</id>" '{ print $2 }' )

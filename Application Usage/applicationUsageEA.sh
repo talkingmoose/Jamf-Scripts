@@ -5,15 +5,15 @@
 
 	Written by: William Smith
 	Professional Services Engineer
-	JAMF Software
-	bill.smith@jamf.com
+	Jamf
+	bill@talkingmoose.net
 	https://github.com/talkingmoose/Jamf-Scripts
 
 	Originally posted: November 7, 2017
 	Updated: August 13, 2018
 
-	Purpose: Jamf Extension Attribute to collect application usage stats
-	from raw data is stored locally on each Mac. Use a Jamf Script/Policy
+	Purpose: Jamf Pro Extension Attribute to collect application usage stats
+	from raw data is stored locally on each Mac. Use a Jamf Pro Script/Policy
 	to read and store the stats on each Mac.
 
 INSTRUCTIONS

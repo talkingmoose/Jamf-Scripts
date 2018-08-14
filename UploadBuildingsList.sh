@@ -4,18 +4,18 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
 # Last updated: August 13, 2018
 #
-# Purpose: Uploads a list of buildings to your JSS by reading a
+# Purpose: Uploads a list of buildings to your Jamf Pro server by reading a
 # BuildingsList.txt file or a list pasted into this script. When used
-# with DownloadBuildingsList.sh, a JSS administrator can start with a list
-# from an old JSS, clean up the text and then upload the text to another
-# JSS.
+# with DownloadBuildingsList.sh, a Jamf Pro administrator can start with a list
+# from an old Jamf Pro server, clean up the text and then upload the text
+# to another Jamf Pro server.
 #
 # The script creates a log file in the same folder as the script.
 #
@@ -26,13 +26,13 @@
 
 # INSTRUCTIONS
 
-# 1) Modify URL, userName and passWord below to access your JSS.
+# 1) Modify URL, userName and passWord below to access your Jamf Pro server.
 # 2) Edit the buildingsList variable below or modify the script to "cat" a text file with the list.
 # 3) Save and run this script via Terminal or an editor with a "run script" feature.
-# 4) Verify buildings in your JSS.
+# 4) Verify buildings in your Jamf Pro server.
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Editor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Editor"
 passWord="password"
 
 # create the output directory and log file
@@ -86,7 +86,7 @@ Turning Torso"
 logresult "Reading buildings list." "Failed to read buildings list."
 
 # upload building names, one at a time
-# the script will not modify buildings that already exist in the JSS
+# the script will not modify buildings that already exist in the Jamf Pro server
 
 while IFS= read aLine
 do

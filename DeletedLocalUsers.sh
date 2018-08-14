@@ -24,7 +24,8 @@
 INSTRUCTIONS
 
 	1) Log in to the Jamf Pro server.
-	2) Navigate to JSS Settings > Computer Management > Scripts.
+	2) In your Jamf Pro server navigate to Settings > Computer Management
+	   > Scripts.
 	3) Click the " + " button to create a new script with these settings:
 	   Display Name: Office 2016 License
 	   Category: <your choice>

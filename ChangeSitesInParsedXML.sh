@@ -4,7 +4,7 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
@@ -13,7 +13,7 @@
 #
 # Purpose: Updates a Site name in parsed XML from the JSS Migration
 # Utility: https://github.com/igeekjsc/JSSAPIScripts. Useful for
-# migrating to new sites in a different JSS.
+# migrating to new sites in a different Jamf Pro server.
 #
 # The script creates a log file in the same folder as the script.
 #

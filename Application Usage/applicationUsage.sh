@@ -5,8 +5,8 @@
 
 	Written by: William Smith
 	Professional Services Engineer
-	JAMF Software
-	bill.smith@jamf.com
+	Jamf
+	bill@talkingmoose.net
 	https://github.com/talkingmoose/Jamf-Scripts
 
 	Originally posted: November 7, 2017
@@ -14,14 +14,14 @@
 
 	Purpose: Jamf Policy script to collection application usage stats
 	over a period of time. Stats are stored locally on each Mac. Use
-	a Jamf Extension Attribute to collect the stats.
+	a Jamf ProExtension Attribute to collect the stats.
 
 INSTRUCTIONS
 
 	1) Create a new script in Jamf Pro:
 	   Name: Collect application usage
-	   Parameter 4: Jamf API user
-	   Parameter 5: Jamf API user password
+	   Parameter 4: Jamf Pro Classic API user
+	   Parameter 5: Jamf Pro Classic API user password
 	   Parameter 6: Usage days to collect
 	   Parameter 7: Data folder
 	2) Add the script to a policy set to run once per day.

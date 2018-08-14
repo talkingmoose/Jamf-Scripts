@@ -4,17 +4,17 @@
 # 
 # Written by: William Smith
 # Professional Services Engineer
-# JAMF Software
+# Jamf
 # bill@talkingmoose.net
 # https://github.com/talkingmoose/Jamf-Scripts
 #
 # Originally posted: July 9, 2016
 # Last updated: August 13, 2018
 #
-# Purpose: Uploads network segment XML files to your JSS. When used with
-# DownloadNetworkSegments.sh, a JSS administrator can start with a list
-# from an old JSS, delete unwanted network segment files and then upload
-# the remaining files to another JSS.
+# Purpose: Uploads network segment XML files to your Jamf Pro server.
+# When used with DownloadNetworkSegments.sh, a Jamf Pro administrator can
+# start with a list from an old server, delete unwanted network segment
+# files and then upload the remaining files to another server.
 #
 # The script creates a log file in the same folder as the script.
 #
@@ -25,17 +25,17 @@
 
 # INSTRUCTIONS
 
-# 1) Run the DownloadNetworkSegments.sh script against your source JSS to create a list of network segment XML files.
-# 2) Review the XML files in the JSS_Output folder and Trash any you do not wish to upload to your destination JSS.
-# 3) Modify URL, userName and passWord below to access your destination JSS.
+# 1) Run the DownloadNetworkSegments.sh script against your source Jamf Pro server to create a list of network segment XML files.
+# 2) Review the XML files in the JSS_Output folder and Trash any you do not wish to upload to your destination Jamf Pro server.
+# 3) Modify URL, userName and passWord below to access your destination Jamf Pro server.
 # 4) Save and run this script via Terminal or an editor with a "run script" feature.
-# 5) Verify network segments in your destination JSS.
+# 5) Verify network segments in your destination Jamf Pro server.
 
 # the time right now
 startTime=$( /bin/date '+%s' )
 
-URL="https://jss.talkingmoose.net:8443"
-userName="JSSAPI-Editor"
+URL="https://jamfpro.talkingmoose.net:8443"
+userName="API-Editor"
 passWord="password"
 
 # create the output directory and log file
