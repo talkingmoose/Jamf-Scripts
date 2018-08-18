@@ -129,10 +129,10 @@ fi
 
 
 # Test Active Directory binding
-runCommand=$( /usr/bin/dscl "/Active Directory/GISD/All Domains" read /Users )
+runCommand=$( /usr/bin/dscl "/Active Directory/TALKINGMOOSE/All Domains" read /Users )
 
 if [ "$runCommand" = "name: dsRecTypeStandard:Users" ]; then
-	testAD="est Active Directory Connection: Success"
+	testAD="Test Active Directory Connection: Success"
 else
 	testAD="Test Active Directory Connection: Fail"	
 fi
