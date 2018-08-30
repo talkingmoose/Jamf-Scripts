@@ -212,7 +212,8 @@ if [ "$clickedButton" = "Enable Remote Support" ]; then
 	# /usr/local/bin/jamf policy -event EnableRemoteSupport
 	
 	# email computer information to help desk
-	/usr/bin/open "mailto:support@talkingmoose.pvt?subject=Computer Information ($serialNumber)&body=$displayInfo"
+	currentUser=$( stat -f "%Su" /dev/console )
+	sudo -u "$currentUser" /usr/bin/open "mailto:support@talkingmoose.pvt?subject=Computer Information ($serialNumber)&body=$displayInfo"
 	
 	if [ $? = 0 ]; then
 		/usr/bin/osascript -e 'display dialog "Remote support enabled." with title "Computer Information" with icon file posix file "/System/Library/CoreServices/Finder.app/Contents/Resources/Finder.icns" buttons {"OK"} default button {"OK"}' &
