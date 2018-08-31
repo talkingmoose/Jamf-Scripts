@@ -154,7 +154,7 @@ operatingSystem="Operating System: $runCommand"
 
 
 # Display battery cycle count
-runCommand=$( ioreg -r -c AppleSmartBattery | awk '$1=="\"CycleCount\"" {print $3}' )
+runCommand=$( /usr/sbin/ioreg -r -c AppleSmartBattery | awk '$1=="\"CycleCount\"" {print $3}' )
 batteryCycleCount="Battery Cycle Count: $runCommand"
 
 
