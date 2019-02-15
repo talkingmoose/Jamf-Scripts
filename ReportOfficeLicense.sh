@@ -26,7 +26,6 @@
 	"Communication happens when I know that you know what I know."
 	
 INSTRUCTIONS
-
 	1) Log in to the Jamf Pro server.
 	2) In Jamf Pro navigate to Settings > Computer Management > Extension Attributes.
 	3) Click the " + " button to create a new extension attribute with these settings:
@@ -71,6 +70,7 @@ function DetectPerpetualLicense {
 }
 
 function DetectO365License {
+
 	# creates a list of local usernames with UIDs above 500 (not hidden)
 	userList=$( /usr/bin/dscl /Local/Default -list /Users uid | /usr/bin/awk '$2 >= 501 { print $1 }' )
 	
@@ -97,22 +97,83 @@ function DetectO365License {
 	echo $activations
 }
 
+function DetectAppStoreInstall {
+
+	# checks the MAS receipt for each Office app
+	if [[ -d "/Applications/Microsoft Excel.app/Contents/_MASReceipt" ]]; then
+		masReceipt[0]="Excel"
+	fi
+	if [[ -d "/Applications/Microsoft Outlook.app/Contents/_MASReceipt" ]]; then
+		masReceipt[1]="Outlook"
+	fi
+	if [[ -d "/Applications/Microsoft PowerPoint.app/Contents/_MASReceipt" ]]; then
+		masReceipt[2]="PowerPoint"
+	fi
+	if [[ -d "/Applications/Microsoft Word.app/Contents/_MASReceipt" ]]; then
+		masReceipt[3]="Word"
+	fi
+
+	# returns the list of Mac App Store versions if any is installed
+	if [[ "${masReceipt[@]}" ]]; then
+		echo "Mac App Store versions installed (${masReceipt[@]})" 
+	fi
+}
+
+function DetectInstalledVersions {
+
+	# checks app versions
+	appList=(Excel,Outlook,PowerPoint,Word)
+	
+	IFS=$','
+	for i in ${appList}; do
+		if [[ -f "/Applications/Microsoft $i.app/Contents/Info.plist" ]]; then
+			appVersion=$(defaults read "/Applications/Microsoft $i.app/Contents/Info.plist" CFBundleVersion | awk -F '.' '{print $2}')
+			if [ ${appVersion} -gt 16 ]; then
+				lastVersionCount=$((lastVersionCount+1))
+			fi
+		fi
+	done
+	
+	# returns the count of Office 2019 installed apps
+	echo $lastVersionCount
+}
+
 ## Main
 
 PLPresent=$(DetectPerpetualLicense)
 O365Activations=$(DetectO365License)
+AppStorePresent=$(DetectAppStoreInstall)
+LastVersionInstalled=$(DetectInstalledVersions)
 
-if [ "$PLPresent" != "No" ] && [ "$O365Activations" ]; then
-	echo "<result>$PLPresent and Office 365 licenses detected. Only the $PLPresent license will be used.</result>"
+if [ ! "$AppStorePresent" ]; then
 
-elif [ "$PLPresent" != "No" ]; then
-	echo "<result>$PLPresent license</result>"
+	if [ "$PLPresent" != "No" ] && [ "$O365Activations" ]; then
+		if [ "$LastVersionInstalled" -ge 1 ] ; then
+			echo "<result>$PLPresent and Office 365 licenses detected. Last versions of apps will use Office 365.</result>"
+
+		else
+			echo "<result>$PLPresent and Office 365 licenses detected. Only the $PLPresent license will be used.</result>"
+		fi
+
+	elif [ "$PLPresent" != "No" ]; then
+		echo "<result>$PLPresent license</result>"
 	
-elif [ "$O365Activations" ]; then
-	echo "<result>Office 365 activations: $O365Activations</result>"
+	elif [ "$O365Activations" ]; then
+		echo "<result>Office 365 activations: $O365Activations</result>"
 	
-elif [ "$PLPresent" == "No" ] && [ ! "$O365Activations" ]; then
-	echo "<result>No licenses</result>"
+	elif [ "$PLPresent" == "No" ] && [ ! "$O365Activations" ]; then
+		echo "<result>No licenses</result>"
+	fi
+
+else
+
+	if [ "$O365Activations" ]; then
+		echo "<result>Office 365 activations: $O365Activations, with $AppStorePresent</result>"
+
+	else
+		echo "<result>No licences but $AppStorePresent</result>"
+	fi
+
 fi
 
 exit 0
