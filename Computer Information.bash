@@ -10,6 +10,7 @@
 	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: August 13, 2018
+	Updated: April 7, 2019
 
 	Purpose: Display a dialog to end users with computer information when
 	run from within Jamf Pro Self Service. Useful for Help Desks to
@@ -154,7 +155,7 @@ operatingSystem="Operating System: $runCommand"
 
 
 # Display battery cycle count
-runCommand=$( /usr/sbin/ioreg -r -c "AppleSmartBattery" | /usr/bin/grep -w "CycleCount" | /usr/bin/awk '{print $3}' | /usr/bin/sed s/\"//g )
+runCommand=$( /usr/sbin/ioreg -r -c "AppleSmartBattery" | /usr/bin/grep '"CycleCount" = ' | /usr/bin/awk '{ print $3 }' | /usr/bin/sed s/\"//g )
 batteryCycleCount="Battery Cycle Count: $runCommand"
 
 
