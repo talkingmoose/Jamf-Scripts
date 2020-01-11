@@ -10,7 +10,7 @@
 	https://github.com/talkingmoose/Jamf-Scripts
 	
 	Originally posted: August 13, 2018
-	Updated: April 7, 2019
+	Updated: January 11, 2020
 
 	Purpose: Display a dialog to end users with computer information when
 	run from within Jamf Pro Self Service. Useful for Help Desks to
