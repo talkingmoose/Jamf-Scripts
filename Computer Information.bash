@@ -23,7 +23,10 @@
 
 INSTRUCTIONS
 
-	1) Edit the "Run Additional Commands" section to choose a behavior
+	1) Edit the supportEmail, adDomain and netbiosDomain variables just
+	   below if using this script to test Active Directory settings.
+	   
+	2) Edit the "Run Additional Commands" section to choose a behavior
 	   for the Enable Remote Support button. This button can do anything
 	   you'd like. Three examples are provided:
 	   
@@ -31,17 +34,25 @@ INSTRUCTIONS
 	   - run a Jamf Pro policy
 	   - email the computer information to your Help Desk
 	   
-	2) In Jamf Pro choose Settings (cog wheel) > Computer Mangement >
+	3) In Jamf Pro choose Settings (cog wheel) > Computer Mangement >
 	   Scripts and create a new script. Copy this script in full to the
 	   script body and save.
-	3) Then choose Computers > Policies and create a new policy. Add
+	4) Then choose Computers > Policies and create a new policy. Add
 	   the script to the policy and enable it for Self Service.
-	4) When an end user calls your Help Desk, the technician can instruct
+	5) When an end user calls your Help Desk, the technician can instruct
 	   him or her to open Self Service and run the script for trouble-
 	   shooting.
 	
 -----------------------------------------------------------------------
 ABOUT_THIS_SCRIPT
+
+
+# if reporting on Active Directory domain
+adDomain="talkingmoose.pvt"
+netbiosDomain="TALKINGMOOSE"
+
+# if using mailto option
+supportEmail="support@talkingmoose.pvt"
 
 
 
@@ -122,7 +133,7 @@ timeServer="$runCommand"
 # Display Active Directory binding
 runCommand=$( /usr/sbin/dsconfigad -show | /usr/bin/grep "Directory Domain" | /usr/bin/awk -F "= " '{ print $2 }' )
 
-if [ "$runCommand" = talkingmoose.pvt ]; then
+if [ "$runCommand" = "$adDomain" ]; then
 	AD="Bound to Active Directory: Yes"
 else
 	AD="Bound to Active Directory: No"	
@@ -130,7 +141,7 @@ fi
 
 
 # Test Active Directory binding
-runCommand=$( /usr/bin/dscl "/Active Directory/TALKINGMOOSE/All Domains" read /Users )
+runCommand=$( /usr/bin/dscl "/Active Directory/$netbiosDomain/All Domains" read /Users )
 
 if [ "$runCommand" = "name: dsRecTypeStandard:Users" ]; then
 	testAD="Test Active Directory Connection: Success"
@@ -144,9 +155,11 @@ fi
 
 
 # Display free space
-FreeSpace=$( /usr/sbin/diskutil info "Macintosh HD" | /usr/bin/grep  -E 'Free Space|Available Space' | /usr/bin/awk -F ":\s*" '{ print $2 }' | awk -F "(" '{ print $1 }' | xargs )
-FreePercentage=$( /usr/sbin/diskutil info "Macintosh HD" | /usr/bin/grep -E 'Free Space|Available Space' | /usr/bin/awk -F "(\\\(|\\\))" '{ print $6 }' )
-diskSpace="Disk Space: $FreeSpace free ($FreePercentage available)"
+FreeSpace=$( /usr/sbin/diskutil info / | /usr/bin/grep  -E 'Free Space|Available Space|Container Free Space' | /usr/bin/awk -F ":\s*" '{ print $2 }' | awk -F "(" '{ print $1 }' | xargs )
+FreeBytes=$( /usr/sbin/diskutil info / | /usr/bin/grep -E 'Free Space|Available Space|Container Free Space' | /usr/bin/awk -F "(\\\(| Bytes\\\))" '{ print $2 }' )
+DiskBytes=$( /usr/sbin/diskutil info / | /usr/bin/grep -E 'Total Space' | /usr/bin/awk -F "(\\\(| Bytes\\\))" '{ print $2 }' )
+FreePercentage=$(echo "scale=2; $FreeBytes*100/$DiskBytes" | bc)
+diskSpace="Disk Space: $FreeSpace free (${FreePercentage}% available)"
 
 
 # Display operating system
@@ -214,7 +227,7 @@ if [ "$clickedButton" = "Enable Remote Support" ]; then
 	
 	# email computer information to help desk
 	currentUser=$( stat -f "%Su" /dev/console )
-	sudo -u "$currentUser" /usr/bin/open "mailto:support@talkingmoose.pvt?subject=Computer Information ($serialNumber)&body=$displayInfo"
+	sudo -u "$currentUser" /usr/bin/open "mailto:$supportEmail?subject=Computer Information ($serialNumber)&body=$displayInfo"
 	
 	if [ $? = 0 ]; then
 		/usr/bin/osascript -e 'display dialog "Remote support enabled." with title "Computer Information" with icon file posix file "/System/Library/CoreServices/Finder.app/Contents/Resources/Finder.icns" buttons {"OK"} default button {"OK"}' &
