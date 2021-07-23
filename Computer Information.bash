@@ -2,7 +2,6 @@
 
 <<ABOUT_THIS_SCRIPT
 -----------------------------------------------------------------------
-
 	Written by:William Smith
 	Professional Services Engineer
 	Jamf
@@ -11,6 +10,7 @@
 	
 	Originally posted: August 13, 2018
 	Updated: January 11, 2020
+			 July 23, 2021
 
 	Purpose: Display a dialog to end users with computer information when
 	run from within Jamf Pro Self Service. Useful for Help Desks to
@@ -20,7 +20,7 @@
 	http://creativecommons.org/licenses/by/4.0/
 
 	"they're good dogs Brent"
-
+	
 INSTRUCTIONS
 
 	1) Edit the supportEmail, adDomain and netbiosDomain variables just
@@ -178,13 +178,11 @@ batteryCycleCount="Battery Cycle Count: $runCommand"
 
 displayInfo="----------------------------------------------
 GENERAL
-
 $computerName
 $serialNumber
 $upTime
 ----------------------------------------------
 NETWORK
-
 $activeServices
 $SSID
 $SSH
@@ -192,12 +190,10 @@ $timeInfo
 $timeServer
 ----------------------------------------------
 ACTIVE DIRECTORY
-
 $AD
 $testAD
 ----------------------------------------------
 HARDWARE/SOFTWARE
-
 $diskSpace
 $operatingSystem
 $batteryCycleCount
@@ -216,6 +212,26 @@ clickedButton=$( /usr/bin/osascript -e "$runCommand" )
 
 ## Run additional commands #####
 
+# function sourced from https://gist.github.com/cdown/1163649
+urlencode() {
+	# urlencode <string>
+	
+	old_lc_collate=$LC_COLLATE
+	LC_COLLATE=C
+	
+	local length="${#1}"
+	for (( i = 0; i < length; i++ ))
+	do
+		local c="${1:$i:1}"
+		case $c in
+			[a-zA-Z0-9.~_-]) printf '%s' "$c" ;;
+			*) printf '%%%02X' "'$c" ;;
+		esac
+	done
+		
+	LC_COLLATE=$old_lc_collate
+}
+
 
 if [ "$clickedButton" = "Enable Remote Support" ]; then
 
@@ -227,7 +243,11 @@ if [ "$clickedButton" = "Enable Remote Support" ]; then
 	
 	# email computer information to help desk
 	currentUser=$( stat -f "%Su" /dev/console )
-	sudo -u "$currentUser" /usr/bin/open "mailto:$supportEmail?subject=Computer Information ($serialNumber)&body=$displayInfo"
+	subject="Computer Information ($serialNumber)"
+	message="$displayInfo"
+	encodedSubject=$( urlencode "$subject" )
+	encodedMessage=$( urlencode "$message" )
+	su "$currentUser" -c "/usr/bin/open mailto:$supportEmail\?subject=$encodedSubject\&body=$encodedMessage"
 	
 	if [ $? = 0 ]; then
 		/usr/bin/osascript -e 'display dialog "Remote support enabled." with title "Computer Information" with icon file posix file "/System/Library/CoreServices/Finder.app/Contents/Resources/Finder.icns" buttons {"OK"} default button {"OK"}' &
